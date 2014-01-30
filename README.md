@@ -11,6 +11,8 @@ Xbox 360 GamePad:
 - Right Thumbstick = Laser
 - A = Respawn 
 - Back / Start = Pasue
+
+
 PC:
 - Arrow keys = Movement 
 - Lasers (currently not implemented)
