@@ -1,26 +1,29 @@
 Squareosity
 ===========
 
-2D retro neon super awesome physics puzzler: this is just a proof of concept 
+2D retro neon super awesome physics puzzler. 
 
 Controls
 ========
 
-Arrow keys = movement
+Xbox 360 GamePad:
+- Left Thumbstick = Movement
+- Right Thumbstick = Laser
+- A = Respawn 
+- Back / Start = Pasue
+PC:
+- Arrow keys = Movement 
+- Lasers (currently not implemented)
+- A = Respawn
+- ESC = Pasue
 
-A = respawn (when you see the neon red skull (you've died) there is a glitch at the start of the game, you will start dead)
+Rules
+=====
 
-ESC = Pasue 
+- You can only touch blue and red neon objects.
+- You must collect stars
 
-gamepad sticks will work even better, use if you have them!
-
-
-
-Side-note
-=========
-There is only one level, so when (if) you complete it you are pushed back to the start of it! Collect the stars! 
-
-And remember
-============
-
-Don't tocuh the neon. Only the side walls are safe. 
+Build requirements
+==================
+- Visual C# 2010
+- XNA 4.0
