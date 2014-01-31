@@ -40,6 +40,8 @@ namespace Squareosity
         ContentManager content;
         SpriteFont gameFont;
 
+        MouseState mouse;
+
         PlayerBody playerBody;
         List<Square> Squares = new List<Square>();
         List<Shape> Shapes = new List<Shape>();
@@ -55,7 +57,7 @@ namespace Squareosity
         Body circleBody;
         Texture2D circleTex;
 
-        
+        Texture2D reticle;
 
         GamePadState previousGamePadState;
 
@@ -118,7 +120,7 @@ namespace Squareosity
             
 
                 cam2D = new Cam2d(ScreenManager.GraphicsDevice);
-
+               reticle = content.Load<Texture2D>("redReticle");
                 // neon whip wheel
                 {
                     // instantiate the cirlce body 
@@ -421,6 +423,7 @@ namespace Squareosity
 
             KeyboardState keyboardState = input.CurrentKeyboardStates[playerIndex];
             GamePadState gamePadState = input.CurrentGamePadStates[playerIndex];
+            MouseState mouse = Mouse.GetState();
 
             // The game pauses either if the user presses the pause button, or if
             // they unplug the active gamepad. This requires us to keep track of
@@ -441,22 +444,7 @@ namespace Squareosity
             else
             {
 
-                if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
-                {
-                    playerBody.playerBody.ApplyLinearImpulse(new Vector2(-1, 0));
-                }
-                if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
-                {
-                    playerBody.playerBody.ApplyLinearImpulse(new Vector2(1, 0));
-                }
-                if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down))
-                {
-                    playerBody.playerBody.ApplyLinearImpulse(new Vector2(0, 1));
-                }
-                if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
-                {
-                    playerBody.playerBody.ApplyLinearImpulse(new Vector2(0, -1));
-                }
+                playerBody.detectInput(keyboardState, mouse,cam2D.Position);
             }
         }
 
@@ -542,7 +530,15 @@ namespace Squareosity
             }
             playerBody.draw(spriteBatch);
 
-            
+            if (!GamePad.GetState(PlayerIndex.One).IsConnected)
+            {
+                mouse = Mouse.GetState();
+                
+
+                Vector2 mousePos = new Vector2(mouse.X, mouse.Y);
+                spriteBatch.Draw(reticle, mousePos + cam2D.Position - new Vector2(1024 / 2, 768 / 2), Color.White);
+            }
+           
                               
 
             spriteBatch.End();

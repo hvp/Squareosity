@@ -55,7 +55,7 @@ namespace Squareosity
 
         public void update(GameTime gameTime)
         {
-            detectInput();
+            
             foreach (playerLaser laser in playerLasers)
             {
                 laser.Update(gameTime);
@@ -91,33 +91,84 @@ namespace Squareosity
       
         }
 
-        public void detectInput()
+        public void detectInput(KeyboardState keyboardState, MouseState mouse, Vector2 camPos)
         {
-            // movement
-            float x = GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.X;
-            float y = GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y;
-            playerBody.ApplyLinearImpulse(new Vector2(x, -y));
-            playerBody.LinearDamping = 1f;
-
-           
-           if (GamePad.GetState(PlayerIndex.One).ThumbSticks.Right != Vector2.Zero)
-            {
-               Vector2 velo = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right;
-
-               velo = new Vector2(velo.X, -velo.Y);
-               float rot = VectorToAngle(GamePad.GetState(PlayerIndex.One).ThumbSticks.Right);
-               playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"),velo,playerBody.Position,rot,world));
-              
-                
-               
-            }
             
-          
+            // movement with gamePad.
+            if (GamePad.GetState(PlayerIndex.One).IsConnected)
+            {
+                float x = GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.X;
+                float y = GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y;
+                playerBody.ApplyLinearImpulse(new Vector2(x, -y));
+                playerBody.LinearDamping = 1f;
+
+
+                if (GamePad.GetState(PlayerIndex.One).ThumbSticks.Right != Vector2.Zero)
+                {
+                    Vector2 velo = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right;
+
+                    velo = new Vector2(velo.X, -velo.Y);
+                    float rot = VectorToAngle(GamePad.GetState(PlayerIndex.One).ThumbSticks.Right);
+                    playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), velo, playerBody.Position, rot, world));
+
+
+
+                }
+
+            }
+            else
+            {
+               
+              
+                if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
+                {
+                    this.playerBody.ApplyLinearImpulse(new Vector2(-1, 0));
+                }
+                if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
+                {
+                    this.playerBody.ApplyLinearImpulse(new Vector2(1, 0));
+                }
+                if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down))
+                {
+                    this.playerBody.ApplyLinearImpulse(new Vector2(0, 1));
+                }
+                if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
+                {
+                    this.playerBody.ApplyLinearImpulse(new Vector2(0, -1));
+                }
+
+                if (mouse.LeftButton == ButtonState.Pressed)
+                {
+                   
+                  
+                     Vector2 mousePos = new Vector2 (mouse.X, mouse.Y);
+                     Vector2 target = mousePos + camPos - new Vector2(1024 / 2, 768 / 2);
+
+                    
+                     Vector2 direction = target - playerBody.Position * 64; // velocity 
+                     float angle = Angle(playerBody.Position * 64, target);
+
+
+                   
+                    playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), direction, playerBody.Position, angle, world));
+
+                   
+
+               
+                }
+
+
+            }
 
 
 
 
 
+        }
+
+        public float Angle(Vector2 from, Vector2 to)
+        {
+            return (float)Math.Atan2(from.X - to.X, to.Y - from.Y );
         }
 
         float VectorToAngle(Vector2 vector)
@@ -139,6 +190,14 @@ namespace Squareosity
         public int getScore()
         {
             return score;
+        }
+
+        public Vector2 getVectorFromRads(double radians)
+        {
+
+            return new Vector2((float)Math.Cos(radians), (float)Math.Sin(radians));
+         
+        
         }
     
     }

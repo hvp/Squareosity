@@ -3,6 +3,14 @@ using System;
 using GameStateManagement;
 using Microsoft.Xna.Framework;
 
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.GamerServices;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
+
+
 namespace Squareosity
 {
    public class SquareosityGame : Microsoft.Xna.Framework.Game
@@ -10,7 +18,7 @@ namespace Squareosity
          GraphicsDeviceManager graphics;
         ScreenManager screenManager;
         ScreenFactory screenFactory;
-
+       
         public static int progess = 1;
 
 
@@ -28,7 +36,7 @@ namespace Squareosity
             graphics.PreferredBackBufferWidth = 1024;
             TargetElapsedTime = TimeSpan.FromTicks(333333);
 
-
+            Mouse.WindowHandle = Window.Handle;
 
             // Create the screen factory and add it to the Services
             screenFactory = new ScreenFactory();

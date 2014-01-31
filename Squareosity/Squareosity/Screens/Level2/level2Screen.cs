@@ -29,6 +29,7 @@ namespace Squareosity
         SpriteFont gameFont;
         PlayerBody playerBody;
         GamePadState previousGamePadState;
+        MouseState mouse;
         Cam2d cam2D;
         BloomComponent bloom;
         public static int bloomSettingsIndex = 0;
@@ -40,6 +41,7 @@ namespace Squareosity
         List<Square> Squares = new List<Square>();
         List<SeekerDrone> Drones = new List<SeekerDrone>();
 
+        Texture2D reticle;
         InputAction pauseAction;
 
         #endregion
@@ -83,20 +85,23 @@ namespace Squareosity
                 bloom = new BloomComponent(ScreenManager.Game);
                 ScreenManager.Game.Components.Add(bloom);
 
-
+                
                 cam2D = new Cam2d(ScreenManager.GraphicsDevice);
-
+                reticle = content.Load<Texture2D>("redReticle");
                 /// player 
                 playerBody = new PlayerBody(content.Load<Texture2D>("redPlayer"), world, content);
 
                 // drones - can only have two without performance issues 
                 {
+                   
                     Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(100, 500), world, content, 10));
-                   //  Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(200, 150), world, content, 9));
-                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(300, 200), world, content, 12));
-                    //   Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(400, 250), world, content));
-                    //   Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(500, 300), world, content));
-                    //     Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(600, 350), world, content));
+                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(200, 150), world, content, 9));
+                 Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(300, 200), world, content, 12));
+                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(400, 250), world, content,14));
+                     Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(500, 300), world, content,20));
+                     Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(600, 350), world, content,25));
+                
+                    
                 }
 
                 Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(0, 50), world));
@@ -176,6 +181,7 @@ namespace Squareosity
 
             if (IsActive)
             {
+                mouse = Mouse.GetState();
                 // bloom
                 bloom.Visible = true;
                 bloom.Settings = BloomSettings.PresetSettings[bloomSettingsIndex];
@@ -184,7 +190,12 @@ namespace Squareosity
                 playerBody.update(gameTime);
                 foreach (SeekerDrone drone in Drones)
                 {
-                    drone.setTarget(playerBody.playerBody.Position * 64);
+                    //drone.setTarget(playerBody.playerBody.Position * 64);
+                   Vector2 mouseDisplayPos = new Vector2(mouse.X, mouse.Y);
+                  
+                   Vector2 target = (mouseDisplayPos + cam2D.Position - new Vector2(1024/ 2, 768 /2));
+                    drone.setTarget(target);
+                   
                     drone.update(gameTime);
                 }
                 foreach (Square square in Squares)
@@ -234,6 +245,7 @@ namespace Squareosity
 
             KeyboardState keyboardState = input.CurrentKeyboardStates[playerIndex];
             GamePadState gamePadState = input.CurrentGamePadStates[playerIndex];
+            MouseState mouse = Mouse.GetState();
 
             // The game pauses either if the user presses the pause button, or if
             // they unplug the active gamepad. This requires us to keep track of
@@ -253,23 +265,7 @@ namespace Squareosity
             }
             else
             {
-                // controller input is handle inside the player class
-                if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
-                {
-                    playerBody.playerBody.ApplyLinearImpulse(new Vector2(-1, 0));
-                }
-                if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
-                {
-                    playerBody.playerBody.ApplyLinearImpulse(new Vector2(1, 0));
-                }
-                if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down))
-                {
-                    playerBody.playerBody.ApplyLinearImpulse(new Vector2(0, 1));
-                }
-                if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
-                {
-                    playerBody.playerBody.ApplyLinearImpulse(new Vector2(0, -1));
-                }
+                playerBody.detectInput(keyboardState, mouse, cam2D.Position);
             }
         }
 
@@ -311,10 +307,13 @@ namespace Squareosity
                 wall.Draw(spriteBatch);
 
             }
-          
-            
-           
-           
+
+            if (!GamePad.GetState(PlayerIndex.One).IsConnected)
+            {
+              
+                Vector2 mousePos = new Vector2(mouse.X, mouse.Y);
+                spriteBatch.Draw(reticle, mousePos + cam2D.Position - new Vector2(1024 / 2, 768 / 2), Color.White);
+            }
            
 
             playerBody.draw(spriteBatch);
