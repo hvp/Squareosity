@@ -73,7 +73,7 @@ namespace Squareosity
             laserBody.BodyType = BodyType.Dynamic;
             laserBody.Rotation = rads;
             laserBody.FixedRotation = true;
-            laserBody.BodyId = 7;
+            laserBody.BodyId = 18;
 
             laserBody.LinearVelocity = velocity;
 

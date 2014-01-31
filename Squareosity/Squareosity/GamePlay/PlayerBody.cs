@@ -26,6 +26,7 @@ namespace Squareosity
          Texture2D tex;
          public bool isAlive = true;
 
+         int health = 100;
          int score;
 
          List<playerLaser> playerLasers = new List<playerLaser>();
@@ -46,7 +47,7 @@ namespace Squareosity
             playerBody.BodyId = 1;
             playerBody.CollisionCategories = Category.Cat1;
             playerBody.CollidesWith = Category.All;
-
+            playerBody.OnCollision +=new OnCollisionEventHandler(playerBody_OnCollision);
             score = 0;
             
 
@@ -55,7 +56,10 @@ namespace Squareosity
 
         public void update(GameTime gameTime)
         {
-            
+            if (health <= 0)
+            {
+                isAlive = false;
+            }
             foreach (playerLaser laser in playerLasers)
             {
                 laser.Update(gameTime);
@@ -166,6 +170,11 @@ namespace Squareosity
 
         }
 
+        public int getHealth
+        {
+            get{return health;}
+
+        }
         public float Angle(Vector2 from, Vector2 to)
         {
             return (float)Math.Atan2(from.X - to.X, to.Y - from.Y );
@@ -198,6 +207,26 @@ namespace Squareosity
             return new Vector2((float)Math.Cos(radians), (float)Math.Sin(radians));
          
         
+        }
+
+        public bool playerBody_OnCollision(Fixture fix1, Fixture fix2, Contact contact)
+        {
+
+            if (fix1.Body.BodyId == 1 && fix2.Body.BodyId == 15)
+            {
+
+                isAlive = false;
+
+            }
+            else if (fix1.Body.BodyId == 1 && fix2.Body.BodyId == 18) // seeker drone laser hitting player
+            {
+                health -= 10;
+
+            }
+
+            
+            return true;
+
         }
     
     }

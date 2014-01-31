@@ -85,7 +85,7 @@ namespace Squareosity
                 bloom = new BloomComponent(ScreenManager.Game);
                 ScreenManager.Game.Components.Add(bloom);
 
-                
+
                 cam2D = new Cam2d(ScreenManager.GraphicsDevice);
                 reticle = content.Load<Texture2D>("redReticle");
                 /// player 
@@ -93,18 +93,29 @@ namespace Squareosity
 
                 // drones - can only have two without performance issues 
                 {
-                   
+
                     Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(100, 500), world, content, 10));
                     Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(200, 150), world, content, 9));
-                 Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(300, 200), world, content, 12));
-                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(400, 250), world, content,14));
-                     Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(500, 300), world, content,20));
-                     Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(600, 350), world, content,25));
-                
-                    
+                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(300, 200), world, content, 12));
+                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(400, 250), world, content, 14));
+                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(500, 300), world, content, 20));
+                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(600, 350), world, content, 25));
+
+                    Drones[0].Stationary = true;
+                    Drones[5].Stationary = true;
+
+
                 }
 
-                Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(0, 50), world));
+                {
+
+                         Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(0, 50), world));
+                         Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(400, 50), world));
+                         Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(240, 350), world));
+                         Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(300, 400), world));
+                         Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(300, 550), world));
+                }
+               
                 int space = 0;
 
                 for (int i = 0; i < 11; i++)
@@ -190,25 +201,42 @@ namespace Squareosity
                 playerBody.update(gameTime);
                 foreach (SeekerDrone drone in Drones)
                 {
-                    //drone.setTarget(playerBody.playerBody.Position * 64);
-                   Vector2 mouseDisplayPos = new Vector2(mouse.X, mouse.Y);
+                   drone.setTarget(playerBody.playerBody.Position * 64);
+                  // Vector2 mouseDisplayPos = new Vector2(mouse.X, mouse.Y);
                   
-                   Vector2 target = (mouseDisplayPos + cam2D.Position - new Vector2(1024/ 2, 768 /2));
-                    drone.setTarget(target);
+                  // Vector2 target = (mouseDisplayPos + cam2D.Position - new Vector2(1024/ 2, 768 /2));
+                 //   drone.setTarget(target);
                    
                     drone.update(gameTime);
+
+                    if (drone.getIsDead)
+                    {
+                        world.RemoveBody(drone.getBody);
+                        playerBody.updateScore(2); /// updater this to a getter and setter!!!
+                    }
+                }
+
+                for (int k = 0; k < Drones.Count; ++k)
+                {
+                    if (Drones[k].getIsDead)
+                        Drones.RemoveAt(k);
                 }
                 foreach (Square square in Squares)
                 {
                     square.Update();
                     if (square.isTouching)
                     {
-                        bloom.Visible = false;
-                       // ScreenManager.RemoveScreen(this);
-                        this.ExitScreen();
-                       
-                        LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new DeadScreen(2));
+                        playerBody.isAlive = false;
                     }
+                }
+                if (playerBody.isAlive == false)
+                {
+                    bloom.Visible = false;
+                    // ScreenManager.RemoveScreen(this);
+                    this.ExitScreen();
+
+                    LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new DeadScreen(2));
+
                 }
                 
                 //game script 

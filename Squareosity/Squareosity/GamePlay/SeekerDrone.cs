@@ -34,14 +34,16 @@ namespace Squareosity
     {
         Texture2D tex;
         Vector2 pos;
-        World world; 
+        World world;
+        int health = 100;
         int range;
         Body droneBody;
         ContentManager content;
         List<Laser> Lasers = new List<Laser>();
         Texture2D laserTex;
         Vector2 target = new Vector2(0,0);
-
+        bool isDead = false;
+        bool isStationary = false;
         float fireRate = 250;
         float counter = 0;
 
@@ -65,6 +67,7 @@ namespace Squareosity
             droneBody.CollisionCategories = Category.Cat4;
             droneBody.FixedRotation = true;
             droneBody.CollidesWith = Category.All ^ Category.Cat2;
+            droneBody.OnCollision+=new OnCollisionEventHandler(droneBody_OnCollision);
             droneBody.BodyId = 15;
             droneBody.Restitution = 1f;
             droneBody.LinearDamping = dampning;
@@ -74,7 +77,18 @@ namespace Squareosity
         public void update(GameTime gameTime)
         {
             // if(inRange)
+            if (isStationary)
+            {
+                fireRate = 100;
+                droneBody.BodyType = BodyType.Static;
+            }
+            else
+            {
+                fireRate = 350;
+                droneBody.BodyType = BodyType.Dynamic;
+            }
 
+            
             keyState = Keyboard.GetState();
             double deltaX;
             double deltaY;
@@ -117,15 +131,18 @@ namespace Squareosity
             //  drone's seeking 
             {
                 direction.Normalize();
-                if (target.X < droneBody.Position.X * 64)
-                {
-                    droneBody.ApplyLinearImpulse(-direction * 0.2f);
-                }
-                else
-                {
-                    droneBody.ApplyLinearImpulse(direction * 0.2f);
-                }
 
+                if (!isStationary)
+                {
+                    if (target.X < droneBody.Position.X * 64)
+                    {
+                        droneBody.ApplyLinearImpulse(-direction * 0.2f);
+                    }
+                    else
+                    {
+                        droneBody.ApplyLinearImpulse(direction * 0.2f);
+                    }
+                }
             }
 
 
@@ -133,7 +150,8 @@ namespace Squareosity
 
 
 
-
+            if (health <= 0)
+                isDead = true;
 
             for (int k = 0; k < Lasers.Count; k++)
             {
@@ -171,6 +189,39 @@ namespace Squareosity
 
         }
 
+        public bool droneBody_OnCollision(Fixture fixtureA, Fixture fixtureB, Contact contact)
+        {
+
+            Body fixA = fixtureA.Body;
+            Body fixB = fixtureB.Body;
+            if (fixA.BodyId == 15 && fixB.BodyId == 10) // player laser collision 
+            {
+                health -= 10;
+
+            }
+
+            return true;
+        }
+        public bool Stationary
+        {
+            set
+            {
+                isStationary = value;
+
+            }
+            get { return isStationary; }
+        }
+
+        public bool getIsDead
+        {
+            get { return isDead; }
+
+        }
+        public Body getBody
+        {
+            get { return droneBody; }
+
+        }
         public void setTarget(Vector2 target)
         {
             this.target = target;
