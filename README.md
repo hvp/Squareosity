@@ -15,7 +15,7 @@ Xbox 360 GamePad:
 
 PC:
 - Arrow keys = Movement 
-- Lasers (currently not implemented)
+- Mouse + LMB = Laser 
 - A = Respawn
 - ESC = Pasue
 
@@ -29,3 +29,7 @@ Build requirements
 ==================
 - Visual C# 2010
 - XNA 4.0
+
+Sample Video
+============
+http://vimeo.com/85485799
