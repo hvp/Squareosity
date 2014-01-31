@@ -61,10 +61,10 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>7FFEE982C22868815821D6E6836FDCB4CDB6E668</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>EE78C5BA7AF8407F0AC4D29C7B258BD74704F3DC</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>Squareosity_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>Squareosity_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -203,6 +203,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Squareosity_1_TemporaryKey.pfx" />
     <None Include="Squareosity_TemporaryKey.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

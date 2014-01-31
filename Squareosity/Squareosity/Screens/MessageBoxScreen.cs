@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using GameStateManagement;
 #endregion
 
@@ -121,7 +122,7 @@ namespace Squareosity
                 // Raise the accepted event, then exit the message box.
                 if (Accepted != null)
                     Accepted(this, new PlayerIndexEventArgs(playerIndex));
-
+                MediaPlayer.Stop();
                 ExitScreen();
             }
             else if (menuCancel.Evaluate(input, ControllingPlayer, out playerIndex))

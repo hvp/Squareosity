@@ -259,17 +259,17 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Audio\deathByRadiation.wav">
+    <Compile Include="Audio\SoundFX\deathByRadiation.wav">
       <Name>deathByRadiation</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
-    <Compile Include="Audio\neonWhips.wav">
+    <Compile Include="Audio\SoundFX\neonWhips.wav">
       <Name>neonWhips</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
     </Compile>
-    <Compile Include="Audio\spaceIsABigPlace.wav">
+    <Compile Include="Audio\SoundFX\spaceIsABigPlace.wav">
       <Name>spaceIsABigPlace</Name>
       <Importer>WavImporter</Importer>
       <Processor>SoundEffectProcessor</Processor>
@@ -308,6 +308,20 @@
       <Name>redReticle</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Audio\Soundtrack\Mr_Spastic_-_b3ta_B1t3r.mp3">
+      <Name>Mr_Spastic_-_b3ta_B1t3r</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Audio\Soundtrack\Mr_Spastic_-_FNSP.mp3">
+      <Name>Mr_Spastic_-_FNSP</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

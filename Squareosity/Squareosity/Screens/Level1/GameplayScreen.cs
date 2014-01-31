@@ -13,6 +13,8 @@ using System.Threading;
 using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -39,6 +41,10 @@ namespace Squareosity
 
         ContentManager content;
         SpriteFont gameFont;
+      
+        Song Song;
+        
+        bool turnedOn = false;
 
         MouseState mouse;
 
@@ -111,13 +117,38 @@ namespace Squareosity
                 if (content == null)
                     content = new ContentManager(ScreenManager.Game.Services, "Content");
 
+
+               
+                
                 gameFont = content.Load<SpriteFont>("gamefont");
+                Song = content.Load<Song>("Audio/Soundtrack/Mr_Spastic_-_b3ta_B1t3r");
+                if (MediaPlayer.State != MediaState.Paused)
+                {
+
+                    MediaPlayer.Volume = 0.75f;
+                    MediaPlayer.Play(Song);
+                    MediaPlayer.IsRepeating = true;
+
+                }
+                else
+                {
+                    MediaPlayer.Resume();
+                }
+
+
+
+
 
                 bloom = new BloomComponent(ScreenManager.Game);
+
+
+
+
                 ScreenManager.Game.Components.Add(bloom);
 
                 playerBody = new PlayerBody(content.Load<Texture2D>("redPlayer"), world,content);
             
+
 
                 cam2D = new Cam2d(ScreenManager.GraphicsDevice);
                reticle = content.Load<Texture2D>("redReticle");
@@ -271,7 +302,15 @@ namespace Squareosity
             {
                 bloom.Visible = true;
                 playerBody.update(gameTime);
+                Console.WriteLine(MediaPlayer.State.ToString());
+
                
+
+                
+                if (MediaPlayer.State == MediaState.Paused)
+                {
+                     
+                }
                 //game script 
                 {
 
@@ -306,6 +345,7 @@ namespace Squareosity
                 {
                     if (shape.isTouching)
                     {
+                      
                         bloom.Visible = false;
                         ScreenManager.RemoveScreen(this);
                        LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new DeadScreen(1));
@@ -320,6 +360,7 @@ namespace Squareosity
                     square.Update();
                     if (square.isTouching)
                     {
+                        MediaPlayer.Pause(); // turn it down but not off! There is no way to resume playback after we have switched it off and loaded a new gameplay screen.
                         bloom.Visible = false;
                         ScreenManager.RemoveScreen(this);
                          LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new DeadScreen(1));
@@ -406,6 +447,8 @@ namespace Squareosity
 
                 world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
             }
+
+            
         }
 
 
