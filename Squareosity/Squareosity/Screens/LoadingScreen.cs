@@ -163,7 +163,7 @@ namespace Squareosity
                 switch (randInt)
                 {
                     case 0:
-                        hint = "Remember! Blue and red neon is safe!";
+                        hint = "Remember! Blue and red neon are safe!";
                         break;
                     case 1:
                         hint = "Collect the red stars";
