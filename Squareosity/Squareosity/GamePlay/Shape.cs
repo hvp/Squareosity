@@ -55,7 +55,7 @@ namespace Squareosity
             Vertices verts = PolygonTools.CreatePolygon(data, tex.Width);
 
             // How do we work out what the correct scale factor is? - Trial and error 
-            Vector2 scale = new Vector2(0.025f, 0.025f);
+            Vector2 scale = new Vector2(0.015f, 0.015f); // was 0.025f
             verts.Scale(ref scale);
 
             Vector2 centroid = -verts.GetCentroid();
@@ -73,7 +73,10 @@ namespace Squareosity
             {
                 shapeBody.BodyType = BodyType.Dynamic;
             }
-            
+            if (isStatic == true)
+            {
+                shapeBody.BodyType = BodyType.Static;
+            }
             shapeBody.Position = pos / 64;
             shapeBody.BodyId = 3;
             shapeBody.CollisionCategories = Category.Cat3;
@@ -86,6 +89,10 @@ namespace Squareosity
         {
             shapeBody.OnCollision += new OnCollisionEventHandler(OnCollision);
             shapeBody.OnSeparation += new OnSeparationEventHandler(OnSeparation);
+        }
+       public Texture2D getTex
+        {
+            get { return tex; }
         }
         public bool OnCollision(Fixture FixtureA, Fixture FixtureB, Contact contact)
         {

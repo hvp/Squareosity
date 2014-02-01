@@ -143,6 +143,7 @@
     <Compile Include="Screens\DeadScreen\DeadScreen.cs" />
     <Compile Include="Screens\Level1\GameplayScreen.cs" />
     <Compile Include="Screens\Level2\level2Screen.cs" />
+    <Compile Include="Screens\Level3\level3Screen.cs" />
     <Compile Include="Screens\LevelEditor\LevelEditor.cs" />
     <Compile Include="Screens\LoadingScreen.cs" />
     <Compile Include="Screens\MainMenuScreen.cs" />
@@ -153,6 +154,7 @@
     <Compile Include="Screens\PauseMenuScreen.cs" />
     <Compile Include="Screens\PlayerIndexEventArgs.cs" />
     <Compile Include="Screens\ScoresScreen\ScoresScreen.cs" />
+    <Compile Include="Screens\TemplateLevel\TemplateLevel.cs" />
     <Compile Include="Screens\TestHarness\TestingGround.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -201,11 +203,6 @@
       <ProductName>Microsoft XNA Framework Redistributable 4.0</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Squareosity_1_TemporaryKey.pfx" />
-    <None Include="Squareosity_2_TemporaryKey.pfx" />
-    <None Include="Squareosity_TemporaryKey.pfx" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

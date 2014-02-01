@@ -132,15 +132,21 @@ namespace Squareosity
 
                         ExitScreen();
                        
-                    LoadingScreen.Load(ScreenManager, true, ControllingPlayer, new GameplayScreen());
+                    LoadingScreen.Load(ScreenManager, false, ControllingPlayer, new GameplayScreen());
                        
                     }
                     else if (levelFrom == 2)
                     {
                         ExitScreen();
                       
-                        LoadingScreen.Load(ScreenManager, true,ControllingPlayer, new level2Screen());
+                        LoadingScreen.Load(ScreenManager, false,ControllingPlayer, new level2Screen());
                     
+                    }
+                    else if (levelFrom == 3)
+                    {
+                        ExitScreen();
+
+                        LoadingScreen.Load(ScreenManager, false, ControllingPlayer, new level3Screen());
                     }
                     
                 }
@@ -162,7 +168,14 @@ namespace Squareosity
 
             batch.End();
 
+            // If the game is transitioning on or off, fade it out to black.
+            if (TransitionPosition > 0 || pauseAlpha > 0)
+            {
+                float alpha = MathHelper.Lerp(1f - TransitionAlpha, 1f, pauseAlpha / 2);
 
+                ScreenManager.FadeBackBufferToBlack(alpha);
+
+            }
             base.Draw(gameTime);
         } 
 

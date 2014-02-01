@@ -171,7 +171,10 @@ namespace Squareosity
 
 
         }
-
+        public Vector2 setPostion
+        {
+            set { playerBody.Position = value / 64; } 
+        }
         public int getHealth
         {
             get{return health;}
@@ -223,6 +226,11 @@ namespace Squareosity
             else if (fix1.Body.BodyId == 1 && fix2.Body.BodyId == 18) // seeker drone laser hitting player
             {
                 health -= 10;
+
+            }
+            else if (fix1.Body.BodyId == 1 && fix2.Body.BodyId == 3) // shape collision
+            {
+                isAlive = false;
 
             }
 

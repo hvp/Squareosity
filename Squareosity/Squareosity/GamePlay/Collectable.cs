@@ -40,6 +40,7 @@ namespace Squareosity
             collectableBody.BodyType = BodyType.Static;
             collectableBody.BodyId = 6;
             collectableBody.CollisionCategories = Category.Cat2;
+            collectableBody.OnCollision += new OnCollisionEventHandler(OnCollision);
 
 
         }
@@ -47,7 +48,7 @@ namespace Squareosity
         public void Update()
         {
 
-            collectableBody.OnCollision += new OnCollisionEventHandler(OnCollision);
+           
          
 
 

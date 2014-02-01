@@ -313,11 +313,7 @@ namespace Squareosity
 
                
 
-                
-                if (MediaPlayer.State == MediaState.Paused)
-                {
-                     
-                }
+            
                 //game script 
                 {
 
@@ -334,11 +330,11 @@ namespace Squareosity
                         Game1.progress = 1;
                         Game1.setScore(playerBody.getScore(), 1);
 
-                        ExitScreen();
+                       
                         
-                        bloom.Visible = false;
-
-                        LoadingScreen.Load(ScreenManager, true, ControllingPlayer,
+                     
+                          ExitScreen();
+                        LoadingScreen.Load(ScreenManager, false, ControllingPlayer,
                            new level2Screen());
                  
                     }
@@ -354,7 +350,7 @@ namespace Squareosity
                     {
                         MediaPlayer.Pause();
                         ExitScreen();
-                        LoadingScreen.Load(ScreenManager, true, ControllingPlayer, new DeadScreen(1));
+                        LoadingScreen.Load(ScreenManager, false, ControllingPlayer, new DeadScreen(1));
                   
 
                     }
@@ -367,10 +363,10 @@ namespace Squareosity
                     if (square.isTouching)
                     {
                         MediaPlayer.Pause(); 
-                        bloom.Visible = false;
+                      
                         ExitScreen();
 
-                        LoadingScreen.Load(ScreenManager, true, ControllingPlayer, new DeadScreen(1));
+                        LoadingScreen.Load(ScreenManager, false, ControllingPlayer, new DeadScreen(1));
                     }
                 }
 
@@ -381,9 +377,9 @@ namespace Squareosity
                     {
                         if (laser.hasHit)
                         {
-                           bloom.Visible = false;
+                         
                            ExitScreen();
-                           LoadingScreen.Load(ScreenManager, true, ControllingPlayer, new DeadScreen(1));
+                           LoadingScreen.Load(ScreenManager, false, ControllingPlayer, new DeadScreen(1));
                             
                         }
 
@@ -409,9 +405,9 @@ namespace Squareosity
                      whip.chainLinks[0].ApplyTorque(50); // gets the wheel spinning
                      if (whip.isTouching) // for some reason this is true on start up
                      {
-                         bloom.Visible = false;
+                        
                          ExitScreen();
-                         LoadingScreen.Load(ScreenManager, true, ControllingPlayer, new DeadScreen(1));
+                         LoadingScreen.Load(ScreenManager, false, ControllingPlayer, new DeadScreen(1));
 
 
                      }
@@ -529,11 +525,7 @@ namespace Squareosity
             foreach (Square sqaure in Squares)
             {
                 sqaure.Draw(spriteBatch);
-                if (sqaure.isTouching)
-                {
-                    ScreenManager.GraphicsDevice.Clear(Color.White);
-                   
-                }
+               
             }
             
 
