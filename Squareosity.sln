@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C# Express 2010
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Squareosity", "Squareosity\Squareosity\Squareosity.csproj", "{0BEF960F-6D89-4151-8780-6B5D2382F101}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SquareosityContent", "Squareosity\SquareosityContent\SquareosityContent.contentproj", "{AE22B84C-8F79-4FB9-9431-46B87239AEBE}"
