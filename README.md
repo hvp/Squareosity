@@ -15,7 +15,7 @@ Xbox 360 GamePad:
 
 
 PC:
-- Arrow keys = Movement 
+- Arrow keys / WASD = Movement 
 - Mouse + LMB = Laser 
 - A = Respawn
 - ESC = Pasue
