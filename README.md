@@ -1,7 +1,7 @@
 Squareosity
 ===========
 
-2D retro neon super awesome physics puzzler. 
+2D retro neon super awesome physics puzzler with elements of galaxy adventure. 
 
 Controls
 ========
