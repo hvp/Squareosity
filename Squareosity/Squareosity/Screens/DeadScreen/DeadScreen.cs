@@ -59,6 +59,7 @@ namespace Squareosity
 
 
                 ScreenManager.Game.ResetElapsedTime();
+        
             }
 
             
@@ -72,11 +73,12 @@ namespace Squareosity
         {
             content.Unload();
         }
-        public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
+        public override void Update(GameTime gameTime, bool otherScreenHasFocus
+            ,bool coveredByOtherScreen)
         {
 
 
-            base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+            base.Update(gameTime, otherScreenHasFocus, false);
 
               // Gradually fade in or out depending on whether we are covered by the pause screen.
             if (coveredByOtherScreen)
@@ -117,21 +119,28 @@ namespace Squareosity
                 
                  bloom.Visible = false;
 
-              // ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
+                ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
 
              }
             else
             {
+                
                 if (keyboardState.IsKeyDown(Keys.A) || gamePadState.Buttons.A == ButtonState.Pressed)
                 {
                     if (levelFrom == 1)
                     {
-                        
-                        LoadingScreen.Load(ScreenManager, true, PlayerIndex.One, new GameplayScreen());
+
+                        ExitScreen();
+                       
+                    LoadingScreen.Load(ScreenManager, true, ControllingPlayer, new GameplayScreen());
+                       
                     }
                     else if (levelFrom == 2)
                     {
-                        LoadingScreen.Load(ScreenManager, true, PlayerIndex.One, new level2Screen());
+                        ExitScreen();
+                      
+                        LoadingScreen.Load(ScreenManager, true,ControllingPlayer, new level2Screen());
+                    
                     }
                     
                 }

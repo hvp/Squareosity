@@ -103,7 +103,7 @@ namespace Squareosity
         #endregion
 
         #region Handle Input
-
+        
 
         /// <summary>
         /// Responds to user input, accepting or cancelling the message box.
@@ -122,6 +122,7 @@ namespace Squareosity
                 // Raise the accepted event, then exit the message box.
                 if (Accepted != null)
                     Accepted(this, new PlayerIndexEventArgs(playerIndex));
+               
                 MediaPlayer.Stop();
                 ExitScreen();
             }

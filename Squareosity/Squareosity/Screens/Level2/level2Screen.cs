@@ -146,6 +146,8 @@ namespace Squareosity
                 ScreenManager.Game.ResetElapsedTime();
             }
 
+            base.Activate(instancePreserved);
+
         }
 
         public override void Deactivate()
@@ -192,6 +194,8 @@ namespace Squareosity
 
             if (IsActive)
             {
+
+          
                 mouse = Mouse.GetState();
                 // bloom
                 bloom.Visible = true;
@@ -212,6 +216,7 @@ namespace Squareosity
                     if (drone.getIsDead)
                     {
                         world.RemoveBody(drone.getBody);
+                        
                         playerBody.updateScore(2); /// updater this to a getter and setter!!!
                     }
                 }
@@ -219,7 +224,9 @@ namespace Squareosity
                 for (int k = 0; k < Drones.Count; ++k)
                 {
                     if (Drones[k].getIsDead)
+                    {
                         Drones.RemoveAt(k);
+                    }
                 }
                 foreach (Square square in Squares)
                 {
@@ -232,8 +239,10 @@ namespace Squareosity
                 if (playerBody.isAlive == false)
                 {
                     bloom.Visible = false;
-                    // ScreenManager.RemoveScreen(this);
-                    this.ExitScreen();
+                    ScreenManager.RemoveScreen(this);
+                    world.Clear();
+                   
+                    // this.ExitScreen();
 
                     LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new DeadScreen(2));
 
@@ -340,7 +349,8 @@ namespace Squareosity
             {
               
                 Vector2 mousePos = new Vector2(mouse.X, mouse.Y);
-                spriteBatch.Draw(reticle, mousePos + cam2D.Position - new Vector2(1024 / 2, 768 / 2), Color.White);
+                spriteBatch.Draw(reticle, mousePos + cam2D.Position - new Vector2(1024 / 2, 768 / 2), null, Color.White, 0f, new Vector2(10, 10), 1f, SpriteEffects.None, 1f);
+        
             }
            
 

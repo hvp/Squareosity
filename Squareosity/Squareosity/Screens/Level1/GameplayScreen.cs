@@ -302,7 +302,14 @@ namespace Squareosity
             {
                 bloom.Visible = true;
                 playerBody.update(gameTime);
-                Console.WriteLine(MediaPlayer.State.ToString());
+
+                foreach (GameScreen screen in ScreenManager.GetScreens())
+                {
+                    if (!screen.Equals(this))
+                    {
+                        ScreenManager.RemoveScreen(screen);
+                    }
+                }
 
                
 
@@ -326,12 +333,12 @@ namespace Squareosity
                     {
                         Game1.progress = 1;
                         Game1.setScore(playerBody.getScore(), 1);
-                        
-                       ScreenManager.RemoveScreen(this);
+
+                        ExitScreen();
                         
                         bloom.Visible = false;
-                    
-                        LoadingScreen.Load(ScreenManager, true, PlayerIndex.One,
+
+                        LoadingScreen.Load(ScreenManager, true, ControllingPlayer,
                            new level2Screen());
                  
                     }
@@ -345,10 +352,9 @@ namespace Squareosity
                 {
                     if (shape.isTouching)
                     {
-                      
-                        bloom.Visible = false;
-                        ScreenManager.RemoveScreen(this);
-                       LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new DeadScreen(1));
+                        MediaPlayer.Pause();
+                        ExitScreen();
+                        LoadingScreen.Load(ScreenManager, true, ControllingPlayer, new DeadScreen(1));
                   
 
                     }
@@ -360,10 +366,11 @@ namespace Squareosity
                     square.Update();
                     if (square.isTouching)
                     {
-                        MediaPlayer.Pause(); // turn it down but not off! There is no way to resume playback after we have switched it off and loaded a new gameplay screen.
+                        MediaPlayer.Pause(); 
                         bloom.Visible = false;
-                        ScreenManager.RemoveScreen(this);
-                         LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new DeadScreen(1));
+                        ExitScreen();
+
+                        LoadingScreen.Load(ScreenManager, true, ControllingPlayer, new DeadScreen(1));
                     }
                 }
 
@@ -375,8 +382,8 @@ namespace Squareosity
                         if (laser.hasHit)
                         {
                            bloom.Visible = false;
-                           ScreenManager.RemoveScreen(this);
-                           LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new DeadScreen(1));
+                           ExitScreen();
+                           LoadingScreen.Load(ScreenManager, true, ControllingPlayer, new DeadScreen(1));
                             
                         }
 
@@ -403,7 +410,8 @@ namespace Squareosity
                      if (whip.isTouching) // for some reason this is true on start up
                      {
                          bloom.Visible = false;
-                         LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new DeadScreen(1));
+                         ExitScreen();
+                         LoadingScreen.Load(ScreenManager, true, ControllingPlayer, new DeadScreen(1));
 
 
                      }
@@ -480,6 +488,8 @@ namespace Squareosity
             {
                // bloom.Dispose();
                 bloom.Visible = false;
+
+                
                
                   ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
 
@@ -579,7 +589,8 @@ namespace Squareosity
                 
 
                 Vector2 mousePos = new Vector2(mouse.X, mouse.Y);
-                spriteBatch.Draw(reticle, mousePos + cam2D.Position - new Vector2(1024 / 2, 768 / 2), Color.White);
+
+                spriteBatch.Draw(reticle,mousePos + cam2D.Position - new Vector2(1024 / 2, 768 / 2),null,Color.White,0f,new Vector2(10,10),1f,SpriteEffects.None,1f);
             }
            
                               

@@ -146,7 +146,9 @@ namespace Squareosity
                    
                   
                      Vector2 mousePos = new Vector2 (mouse.X, mouse.Y);
-                     Vector2 target = mousePos + camPos - new Vector2(1024 / 2, 768 / 2);
+                   
+                    
+                    Vector2 target = mousePos + camPos - new Vector2(1024f / 2f, 768f / 2f);
 
                     
                      Vector2 direction = target - playerBody.Position * 64; // velocity 
@@ -177,7 +179,7 @@ namespace Squareosity
         }
         public float Angle(Vector2 from, Vector2 to)
         {
-            return (float)Math.Atan2(from.X - to.X, to.Y - from.Y );
+            return (float)Math.Atan2(from.X - to.X,to.Y - from.Y);
         }
 
         float VectorToAngle(Vector2 vector)
