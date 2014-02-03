@@ -122,6 +122,7 @@ namespace Squareosity
             }
             else
             {
+                playerBody.LinearDamping = 1f;
                
               
                 if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
@@ -155,6 +156,7 @@ namespace Squareosity
                      float angle = Angle(playerBody.Position * 64, target);
 
 
+                   
                    
                     playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), direction, playerBody.Position, angle, world));
 
