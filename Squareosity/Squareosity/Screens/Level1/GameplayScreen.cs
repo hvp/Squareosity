@@ -377,7 +377,7 @@ namespace Squareosity
                     {
                         if (laser.hasHit)
                         {
-                         
+                            MediaPlayer.Pause(); 
                            ExitScreen();
                            LoadingScreen.Load(ScreenManager, false, ControllingPlayer, new DeadScreen(1));
                             
@@ -405,7 +405,7 @@ namespace Squareosity
                      whip.chainLinks[0].ApplyTorque(50); // gets the wheel spinning
                      if (whip.isTouching) // for some reason this is true on start up
                      {
-                        
+                         MediaPlayer.Pause(); 
                          ExitScreen();
                          LoadingScreen.Load(ScreenManager, false, ControllingPlayer, new DeadScreen(1));
 
@@ -546,7 +546,7 @@ namespace Squareosity
                 shape.Draw(spriteBatch);
                 if (shape.isTouching)
                 {
-                    ScreenManager.GraphicsDevice.Clear(Color.White);
+                   
                    
                     
                 }
@@ -558,7 +558,7 @@ namespace Squareosity
                 {
                     if (laser.hasHit)
                     {
-                        ScreenManager.GraphicsDevice.Clear(Color.White);
+                      
                    
                     }
 
