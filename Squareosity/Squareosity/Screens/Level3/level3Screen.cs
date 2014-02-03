@@ -153,6 +153,7 @@ namespace Squareosity
                 Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(1050, 45), false, world));
                 Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(1050, 555), false, world));
 
+               
 
                 // set cam track 
 
@@ -231,6 +232,8 @@ namespace Squareosity
                     }
                 }
 
+                
+
                 // update entites
                 playerBody.update(gameTime);
 
@@ -253,7 +256,7 @@ namespace Squareosity
                 }
                 
                 //game script 
-
+                  
 
                
 

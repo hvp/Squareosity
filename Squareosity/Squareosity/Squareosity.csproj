@@ -120,6 +120,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GamePlay\HealthGem.cs" />
     <Compile Include="GamePlay\playerLaser.cs" />
     <Compile Include="GamePlay\FX\BloomComponent.cs" />
     <Compile Include="GamePlay\FX\BloomSettings.cs" />

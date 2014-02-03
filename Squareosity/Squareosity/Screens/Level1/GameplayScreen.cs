@@ -136,15 +136,23 @@ namespace Squareosity
                 }
 
 
-
-
-
                 bloom = new BloomComponent(ScreenManager.Game);
 
+                for (int k = 0; k < ScreenManager.Game.Components.Count; ++k)
+                {
+                    if(ScreenManager.Game.Components[k].Equals(bloom))
+                    {
+                        ScreenManager.Game.Components.RemoveAt(k);
+                    }
 
+                }
+               // 
+                 ScreenManager.Game.Components.Add(bloom);
 
+                
 
-                ScreenManager.Game.Components.Add(bloom);
+        
+                ScreenManager.TraceEnabled = true;
 
                 playerBody = new PlayerBody(content.Load<Texture2D>("redPlayer"), world,content);
             
@@ -303,15 +311,7 @@ namespace Squareosity
                 bloom.Visible = true;
                 playerBody.update(gameTime);
 
-                foreach (GameScreen screen in ScreenManager.GetScreens())
-                {
-                    if (!screen.Equals(this))
-                    {
-                        ScreenManager.RemoveScreen(screen);
-                    }
-                }
-
-               
+              
 
             
                 //game script 
@@ -334,6 +334,7 @@ namespace Squareosity
                         
                      
                           ExitScreen();
+                          bloom.Visible = false;
                         LoadingScreen.Load(ScreenManager, false, ControllingPlayer,
                            new level2Screen());
                  
@@ -350,6 +351,7 @@ namespace Squareosity
                     {
                         MediaPlayer.Pause();
                         ExitScreen();
+                        bloom.Visible = false;
                         LoadingScreen.Load(ScreenManager, false, ControllingPlayer, new DeadScreen(1));
                   
 
@@ -362,13 +364,18 @@ namespace Squareosity
                     square.Update();
                     if (square.isTouching)
                     {
+                        
                         MediaPlayer.Pause(); 
                       
                         ExitScreen();
-
+                        bloom.Visible = false;
                         LoadingScreen.Load(ScreenManager, false, ControllingPlayer, new DeadScreen(1));
+                        
+                     
+                       // ScreenManager.AddScreen(new MessageBoxScreen("You've picked up a power up!"),ControllingPlayer);
                     }
                 }
+              
 
                 foreach (Bady bady in Badies)
                 {
@@ -379,6 +386,7 @@ namespace Squareosity
                         {
                             MediaPlayer.Pause(); 
                            ExitScreen();
+                           bloom.Visible = false;
                            LoadingScreen.Load(ScreenManager, false, ControllingPlayer, new DeadScreen(1));
                             
                         }
@@ -407,6 +415,7 @@ namespace Squareosity
                      {
                          MediaPlayer.Pause(); 
                          ExitScreen();
+                         bloom.Visible = false;
                          LoadingScreen.Load(ScreenManager, false, ControllingPlayer, new DeadScreen(1));
 
 
@@ -483,7 +492,7 @@ namespace Squareosity
             if (pauseAction.Evaluate(input, ControllingPlayer, out player) || gamePadDisconnected)
             {
                // bloom.Dispose();
-                bloom.Visible = false;
+                 bloom.Visible = false;
 
                 
                
@@ -503,7 +512,7 @@ namespace Squareosity
         /// </summary>
         public override void Draw(GameTime gameTime)
         {
-            bloom.BeginDraw();
+             bloom.BeginDraw();
 
             ScreenManager.GraphicsDevice.Clear(ClearOptions.Target,
                                                Color.Black, 0, 0);
@@ -575,7 +584,7 @@ namespace Squareosity
             }
             playerBody.draw(spriteBatch);
 
-            if (!GamePad.GetState(PlayerIndex.One).IsConnected)
+            if (!GamePad.GetState(PlayerIndex.One).IsConnected && IsActive == true)
             {
                 mouse = Mouse.GetState();
                 

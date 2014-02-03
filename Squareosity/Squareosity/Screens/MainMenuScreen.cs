@@ -30,6 +30,7 @@ namespace Squareosity
             // Create our menu entries.
             MenuEntry playGameMenuEntry = new MenuEntry("Play");
             MenuEntry optionsMenuEntry = new MenuEntry("Level Select");
+            MenuEntry survivalModeMenuEntry = new MenuEntry("Survival Mode");
             MenuEntry levelEditEntry = new MenuEntry("Level Editor");
             MenuEntry exitMenuEntry = new MenuEntry("Exit");
 
@@ -37,11 +38,13 @@ namespace Squareosity
             playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
             optionsMenuEntry.Selected += OptionsMenuEntrySelected;
             levelEditEntry.Selected += levelEditEntrySelected;
+            survivalModeMenuEntry.Selected += survivalModeEntrySelected; 
             exitMenuEntry.Selected += OnCancel;
 
             // Add entries to the menu.
             MenuEntries.Add(playGameMenuEntry);
             MenuEntries.Add(optionsMenuEntry);
+            MenuEntries.Add(survivalModeMenuEntry);
             MenuEntries.Add(levelEditEntry);
             MenuEntries.Add(exitMenuEntry);
         }
@@ -89,6 +92,10 @@ namespace Squareosity
         {
            LoadingScreen.Load(ScreenManager,true,e.PlayerIndex,
                new LevelEditor());
+        }
+        void survivalModeEntrySelected(object sender, PlayerIndexEventArgs e)
+        {
+
         }
 
 

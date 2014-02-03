@@ -268,7 +268,7 @@ namespace Squareosity
                    
                     
                     this.ExitScreen();
-
+                    bloom.Visible = false;
                     LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new DeadScreen(2));
 
                 }
@@ -285,6 +285,7 @@ namespace Squareosity
                 if (playerBody.getScore() == 14)
                 {
                     ExitScreen();
+                    bloom.Visible = false;
                         LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new level3Screen());
                     
                 }
@@ -388,7 +389,7 @@ namespace Squareosity
 
             }
 
-            if (!GamePad.GetState(PlayerIndex.One).IsConnected)
+            if (!GamePad.GetState(PlayerIndex.One).IsConnected && IsActive == true)
             {
               
                 Vector2 mousePos = new Vector2(mouse.X, mouse.Y);

@@ -88,7 +88,7 @@ namespace Squareosity
 
             if (IsActive)
             {
-                bloom.Visible = true;
+              //  bloom.Visible = true;
 
 
             }
@@ -117,7 +117,7 @@ namespace Squareosity
             if (pauseAction.Evaluate(input, ControllingPlayer, out player) || gamePadDisconnected)
             {
                 
-                 bloom.Visible = false;
+              //   bloom.Visible = false;
 
                 ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
 
@@ -131,21 +131,24 @@ namespace Squareosity
                     {
 
                         ExitScreen();
-                       
+
+
+                        bloom.Visible = false;
+
                     LoadingScreen.Load(ScreenManager, false, ControllingPlayer, new GameplayScreen());
                        
                     }
                     else if (levelFrom == 2)
                     {
                         ExitScreen();
-                      
+                        bloom.Visible = false;
                         LoadingScreen.Load(ScreenManager, false,ControllingPlayer, new level2Screen());
                     
                     }
                     else if (levelFrom == 3)
                     {
                         ExitScreen();
-
+                        bloom.Visible = false;
                         LoadingScreen.Load(ScreenManager, false, ControllingPlayer, new level3Screen());
                     }
                     
@@ -167,6 +170,7 @@ namespace Squareosity
 
 
             batch.End();
+            
 
             // If the game is transitioning on or off, fade it out to black.
             if (TransitionPosition > 0 || pauseAlpha > 0)
