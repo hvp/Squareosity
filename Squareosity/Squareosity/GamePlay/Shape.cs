@@ -43,7 +43,7 @@ namespace Squareosity
         /// <param name="pos">Postion in physics units</param>
         /// <param name="isStatic">True for static</param>
         /// <param name="world">World</param>
-        public Shape(Texture2D tex, Vector2 pos, bool isStatic, World world)
+        public Shape(Texture2D tex, Vector2 pos, bool isStatic, bool colliedsWithPlayerLaser ,World world)
         {
             this.tex = tex;
             this.pos = pos;
@@ -79,7 +79,15 @@ namespace Squareosity
             }
             shapeBody.Position = pos / 64;
             shapeBody.BodyId = 3;
-            shapeBody.CollisionCategories = Category.Cat3;
+            if (colliedsWithPlayerLaser)
+            {
+                shapeBody.CollisionCategories = Category.Cat4;
+            }
+            else
+            {
+                shapeBody.CollisionCategories = Category.Cat8;
+
+            }
             shapeBody.CollidesWith = Category.All ^ Category.Cat2;
             orgin = new Vector2(tex.Width / 2, tex.Height / 2); // this seems to work well
            

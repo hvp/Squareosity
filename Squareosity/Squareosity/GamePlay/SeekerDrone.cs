@@ -155,6 +155,8 @@ namespace Squareosity
 
             for (int k = 0; k < Lasers.Count; k++)
             {
+
+                Lasers[k].Update(gameTime);
                 if (Lasers[k].hasHit || Lasers[k].hasDecayed)
                 {
                     world.RemoveBody(Lasers[k].laserBody);

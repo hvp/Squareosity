@@ -36,7 +36,7 @@ namespace Squareosity
             squareBody = BodyFactory.CreateRectangle(world, size, size, 1f, pos / 64);
             squareBody.BodyType = BodyType.Static;
             squareBody.BodyId = 2;
-            squareBody.CollisionCategories = Category.Cat3;
+            squareBody.CollisionCategories = Category.Cat7;
             squareBody.CollidesWith = Category.All ^ Category.Cat2;
         }
 

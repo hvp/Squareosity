@@ -41,7 +41,15 @@ namespace Squareosity
 
         ContentManager content;
         SpriteFont gameFont;
-      
+
+
+        enum PowerUp
+        {
+            None,
+            PowerLaserBlast
+
+        };
+
         Song Song;
         
         bool turnedOn = false;
@@ -52,7 +60,7 @@ namespace Squareosity
         List<Square> Squares = new List<Square>();
         List<Shape> Shapes = new List<Shape>();
         List<Wall> Walls = new List<Wall>();
-        List<Maze> Mazes = new List<Maze>();
+        
         List<Collectable> Collectables = new List<Collectable>();
         List<Whip> Whips = new List<Whip>();
         List<Bady> Badies = new List<Bady>();
@@ -148,16 +156,7 @@ namespace Squareosity
                 }
                // 
                  ScreenManager.Game.Components.Add(bloom);
-
-                
-
-        
-                ScreenManager.TraceEnabled = true;
-
                 playerBody = new PlayerBody(content.Load<Texture2D>("redPlayer"), world,content);
-            
-
-
                 cam2D = new Cam2d(ScreenManager.GraphicsDevice);
                reticle = content.Load<Texture2D>("redReticle");
                 // neon whip wheel
@@ -231,7 +230,7 @@ namespace Squareosity
 
                     // Ninja gate
                     {
-                        ninjaGate = new Shape(content.Load<Texture2D>("NinjaWeapons/blueNinjaWheel"),new Vector2((space - 5), 600f),false,world);
+                        ninjaGate = new Shape(content.Load<Texture2D>("NinjaWeapons/blueNinjaWheel"),new Vector2((space - 5), 600f),false,false,world);
                         Shapes.Add(ninjaGate);
                         Shapes[0].shapeBody.AngularVelocity = 10f;
                       //  Shapes.Add(new Shape(content.Load<Texture2D>("NinjaWeapons/blueNinjaWheel"),new Vector2((space - 5), 600f),false,world));
@@ -309,7 +308,7 @@ namespace Squareosity
             if (IsActive)
             {
                 bloom.Visible = true;
-                playerBody.update(gameTime);
+                
 
               
 
@@ -391,11 +390,29 @@ namespace Squareosity
                             
                         }
 
-                    }
+                      
 
+                    }
+                    if (bady.hitByPlayerLaser)
+                    {
+                        List<playerLaser> playerLasers = playerBody.getLasers;
+
+                        for (int k = 0; k < playerLasers.Count; ++k)
+                        {
+                            if (bady.playerLaserBody.Equals(playerLasers[k].laserBody))
+                            {
+                                bady.deltaHealth = playerLasers[k].getDamage;
+                            }
+
+                        }
+
+                    }
+               
                     bady.Update(gameTime);
                    
                 }
+
+
 
                 for (int k = 0; k < Badies.Count; k++)
                 {
@@ -447,6 +464,7 @@ namespace Squareosity
                     }
                 }
 
+                playerBody.update(gameTime);
                 // limts on the cam. 
 
                 cam2D.MaxRotation = 0.001f;
@@ -456,7 +474,7 @@ namespace Squareosity
                 cam2D.MinPosition = new Vector2(((playerBody.playerBody.Position.X) * 64) + 2, ((playerBody.playerBody.Position.Y) * 64) + 1);
                 cam2D.Update(gameTime);
 
-
+                
 
                 world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
             }

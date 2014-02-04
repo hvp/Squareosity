@@ -43,7 +43,7 @@ namespace Squareosity
             wallBody = BodyFactory.CreateRectangle(world, tex.Width / 64.0f, tex.Height / 64.0f, 1f, pos / 64.0f);
             wallBody.BodyId = 4;
             wallBody.BodyType = BodyType.Static;
-            wallBody.CollisionCategories = Category.Cat3;
+            wallBody.CollisionCategories = Category.Cat7;
             wallBody.CollidesWith = Category.All ^ Category.Cat2;
 
             orgin = new Vector2(tex.Width / 2.0f, tex.Height / 2.0f);

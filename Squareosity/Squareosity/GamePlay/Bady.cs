@@ -31,6 +31,9 @@ namespace Squareosity
        public  List<Laser> Lasers;
         Body badyBody;
         public bool isDead = false;
+
+        Body hitByLaser;
+       public bool hitByPlayerLaser = false;
         World world;
         float time = 0;
         float timeLaser = 0;
@@ -96,6 +99,7 @@ namespace Squareosity
         }
         public void Update(GameTime gameTime)
         {
+         
             if (health <= 0)
             {
                 isDead = true;
@@ -123,6 +127,8 @@ namespace Squareosity
 
          for(int k = 0; k < Lasers.Count; k++)
          {
+             Lasers[k].Update(gameTime);
+
              if (Lasers[k].hasHit)
              {
                  world.RemoveBody(Lasers[k].laserBody);
@@ -171,11 +177,30 @@ namespace Squareosity
 
             if (fixa.BodyId == 9 && fixb.BodyId == 10) // getting hit by players lasers 
             {
-                health -= 2;
+             
+                hitByPlayerLaser = true;
+                playerLaserBody = fixb;
             }
 
             return true;
 
+        }
+
+        /// <summary>
+        /// Gets and sets the player laser body that just hit the player 
+        /// </summary>
+        public Body playerLaserBody
+        {
+            set { hitByLaser = value; }
+            get { return hitByLaser; }
+        }
+        /// <summary>
+        /// Removes delta amount of health from the bady
+        /// </summary>
+        public int deltaHealth
+        {
+
+            set { health -= value; }
         }
 
     }

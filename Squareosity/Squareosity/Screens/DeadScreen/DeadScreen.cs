@@ -117,7 +117,7 @@ namespace Squareosity
             if (pauseAction.Evaluate(input, ControllingPlayer, out player) || gamePadDisconnected)
             {
                 
-              //   bloom.Visible = false;
+               bloom.Visible = false;
 
                 ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
 

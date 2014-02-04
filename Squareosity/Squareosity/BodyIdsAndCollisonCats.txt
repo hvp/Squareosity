@@ -1,0 +1,24 @@
+﻿/////////////////////////////////
+Body IDs:
+player: 1
+Squares: 2
+Shape: 3
+Wall: 4
+5 = free.
+Colleactable: 6
+Laser from a 'Bady': 7
+Whip chain link: 8
+Player's Lasers: 10 
+SeekerDrone: 15
+Laser from a seekerDrone: 18
+
+////////////////////////////////
+Collision CATS:
+CAT 1 = Player
+CAT 2 = Collecatbles 
+CAT 3 = Chainlink
+CAT 4 = SeekerDrone, bady, Ninja gate shape
+CAT 8 = Spinning wheel (shape)
+
+CAT 7 = Square, Wall
+CAT 

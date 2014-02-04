@@ -1,3 +1,0 @@
-﻿player: 1
-Squares: 2
-SeekerDrones: 15

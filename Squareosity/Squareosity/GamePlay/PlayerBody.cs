@@ -21,11 +21,20 @@ namespace Squareosity
 {
     class PlayerBody
     {
+        enum PowerUp
+        {
+            None,
+            PowerLaserBlast
+
+        };
+
+         PowerUp currentPower = PowerUp.PowerLaserBlast;
          Vector2 pos = new Vector2(1024/2f, 768 / 2f); // graphics pos
          Vector2 orgin = new Vector2(10, 10);
          Texture2D tex;
          public bool isAlive = true;
 
+         KeyboardState oldKeyState;
          int health = 100;
          int score;
 
@@ -46,7 +55,7 @@ namespace Squareosity
             playerBody.Friction = 0.5f;
             playerBody.BodyId = 1;
             playerBody.CollisionCategories = Category.Cat1;
-            playerBody.CollidesWith = Category.All;
+            playerBody.CollidesWith = Category.All ^ Category.Cat5;
             playerBody.OnCollision +=new OnCollisionEventHandler(playerBody_OnCollision);
             score = 0;
             
@@ -106,18 +115,20 @@ namespace Squareosity
                 playerBody.ApplyLinearImpulse(new Vector2(x, -y));
                 playerBody.LinearDamping = 1f;
 
-
+               
                 if (GamePad.GetState(PlayerIndex.One).ThumbSticks.Right != Vector2.Zero)
                 {
                     Vector2 velo = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right;
 
                     velo = new Vector2(velo.X, -velo.Y);
                     float rot = VectorToAngle(GamePad.GetState(PlayerIndex.One).ThumbSticks.Right);
-                    playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), velo, playerBody.Position, rot, world));
+                    playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), velo, playerBody.Position, rot, 2 ,world));
 
 
 
                 }
+
+
 
             }
             else
@@ -142,6 +153,30 @@ namespace Squareosity
                     this.playerBody.ApplyLinearImpulse(new Vector2(0, -1));
                 }
 
+                if (keyboardState.IsKeyDown(Keys.Space) && oldKeyState.IsKeyUp(Keys.Space))
+                {
+                    if (currentPower == PowerUp.PowerLaserBlast)
+                    {
+
+                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), getVectorFromRads(AngleToRads(45)), playerBody.Position, -AngleToRads(45), 50,world));
+                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), -getVectorFromRads(AngleToRads(45)), playerBody.Position, -AngleToRads(45),50, world));
+                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), -getVectorFromRads(AngleToRads(135)), playerBody.Position, -AngleToRads(135),50 ,world));
+                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), getVectorFromRads(AngleToRads(135)), playerBody.Position, -AngleToRads(135), 50,world));
+
+                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), new Vector2(1,0), playerBody.Position, VectorToAngle(new Vector2(1,0)), 50,world));
+                        
+                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), new Vector2(0, 1), playerBody.Position, VectorToAngle(new Vector2(0, 1)), 50 ,world));
+
+                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), new Vector2(0, -1), playerBody.Position, VectorToAngle(new Vector2(0, -1)), 50,world));
+
+                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), new Vector2(-1, 0), playerBody.Position, VectorToAngle(new Vector2(-1, 0)),50,world));
+
+                        currentPower = PowerUp.None;
+                            
+                    }
+
+                }
+
                 if (mouse.LeftButton == ButtonState.Pressed)
                 {
                    
@@ -158,13 +193,14 @@ namespace Squareosity
 
                    
                    
-                    playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), direction, playerBody.Position, angle, world));
+                    playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), direction, playerBody.Position, angle,2 ,world));
 
                    
 
                
                 }
 
+                oldKeyState = keyboardState;
 
             }
 
@@ -173,6 +209,13 @@ namespace Squareosity
 
 
         }
+
+        public List<playerLaser> getLasers
+        {
+
+            get { return playerLasers; }
+        }
+       
         public Vector2 setPostion
         {
             set { playerBody.Position = value / 64; } 
@@ -192,7 +235,7 @@ namespace Squareosity
             return (float)Math.Atan2(vector.X, vector.Y);
         }
 
-        float AngleToRads(float angle)
+        float AngleToRads(float angle) // you have to flip this to get the correct amount 
         {
             return (float)(angle * (Math.PI / 180.0f));       
     

@@ -32,7 +32,9 @@ namespace Squareosity
        public bool hasDecayed = false;
        float counter = 0;
 
-        public playerLaser(Texture2D tex,Vector2 velocity,Vector2 pos ,float roatation, World world)
+       int damage; 
+
+        public playerLaser(Texture2D tex,Vector2 velocity,Vector2 pos ,float roatation, int damage,World world)
         {
             laserBody = BodyFactory.CreateRectangle(world, 4f / 64f, 10f / 64f, 1f, pos);
             texture = tex;
@@ -40,11 +42,13 @@ namespace Squareosity
             this.velocity = velocity;
 
             hasCollied = false;
+            this.damage = damage;
 
             laserBody.Rotation = roatation;
             laserBody.BodyType = BodyType.Dynamic;
             laserBody.FixedRotation = true;
-            laserBody.CollidesWith = Category.All ^ Category.Cat3 ^ Category.Cat1;
+            laserBody.CollisionCategories = Category.Cat5;
+            laserBody.CollidesWith = Category.All  ^ Category.Cat1 ^ Category.Cat7 ^  Category.Cat5 ^  Category.Cat8;
             laserBody.BodyId = 10;
 
 
@@ -84,5 +88,10 @@ namespace Squareosity
 
             return true;
         }
+        public int getDamage
+        {
+            get { return damage; }
+        }
+    
     }
 }

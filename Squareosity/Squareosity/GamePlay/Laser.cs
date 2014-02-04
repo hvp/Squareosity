@@ -27,10 +27,14 @@ namespace Squareosity
       public bool hasHitElse = false;
       public Body laserBody;
 
+      bool isSpaceBady = false;
+      Vector2 linVeloY = new Vector2(0, 5);
+      Vector2 linVeloX = new Vector2(0, 5);
+
       Texture2D tex;
       float rads;
 
-      float decayTime = 250;
+      float decayTime = 1000;
       public bool hasDecayed = false;
       float counter = 0;
 
@@ -40,22 +44,26 @@ namespace Squareosity
 
             this.tex = tex;
             laserBody.CollisionCategories = Category.Cat2;
-            laserBody.BodyType = BodyType.Dynamic;
+            laserBody.CollidesWith = Category.All ^ Category.Cat3 ^ Category.Cat7 ^ Category.Cat2 ^ Category.Cat4;
             laserBody.Rotation = badyBody.Rotation;
             laserBody.FixedRotation = true;
             laserBody.BodyId = 7;
-
+            laserBody.BodyType = BodyType.Dynamic;
+            isSpaceBady = true;
             rads = laserBody.Rotation;
 
-            if (rads <= 1.57079633f) // 90
-            {
+           if (rads <= 1.57079633f) // 90C:\Users\User\Documents\Games\Squareosity\Squareosity\Squareosity\GamePlay\Laser.cs
+             {
                 laserBody.LinearVelocity = new Vector2(5, 0);
+                Console.WriteLine("LASER LV : " + laserBody.LinearVelocity.ToString());
             }
-            else if(rads <= 3.14159265f) // 180
-            {
+         
+              else if (rads <= 3.14159265f) // 180
+          {
                 laserBody.LinearVelocity = new Vector2(0, 5);
-            }
+           }
 
+          
            
 
             laserBody.OnCollision += new OnCollisionEventHandler(OnCollision);
@@ -88,10 +96,12 @@ namespace Squareosity
           if (fixa.BodyId == 7 && fixb.BodyId == 1)
           {
               hasHit = true;
+        
           }
           else
           {
               hasHitElse = true;
+             
           }
             
             
@@ -100,7 +110,7 @@ namespace Squareosity
         }
         public void Update(GameTime gameTime)
         {
-
+            
             counter += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
             if (counter >= decayTime)

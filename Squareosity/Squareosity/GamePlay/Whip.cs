@@ -27,21 +27,27 @@ namespace Squareosity
         Vector2 start;
         Vector2 end;
         public   bool isTouching = false;
-   
+        World world;
+
+        List<RevoluteJoint> joints;
         public Whip(Texture2D tex, Vector2 start, Vector2 end, World world )
         {
             this.tex = tex;
+            this.world = world;
 
             this.start = start / 64;
             this.end = end / 64;
 
             Path path = new Path();
+            
+
 
             path.Add(this.start);
             path.Add(this.end);
 
             //A single chainlink
             PolygonShape shape = new PolygonShape(PolygonTools.CreateRectangle(0.125f, 0.125f),20);
+           // ChainLink shape = new ChainLink(100);
 
             //Use PathFactory to create all the chainlinks based on the chainlink created before.
             chainLinks = PathManager.EvenlyDistributeShapesAlongPath(world, path, shape, BodyType.Dynamic,30);
@@ -68,7 +74,7 @@ namespace Squareosity
             
 
             //Attach all the chainlinks together with a revolute joint. This is the spacing between links
-            List<RevoluteJoint> joints = PathManager.AttachBodiesWithRevoluteJoint(world, chainLinks,
+          joints = PathManager.AttachBodiesWithRevoluteJoint(world, chainLinks,
                                                                                    new Vector2(0, -0.1f),
                                                                                    new Vector2(0, 0.1f),
                                                                                    false, false);
@@ -77,7 +83,7 @@ namespace Squareosity
             for (int i = 0; i < joints.Count; i++)
             {
                 RevoluteJoint r = joints[i];
-                r.Breakpoint = 10000f;
+                r.Breakpoint = 5000f;
             }
 
 
@@ -104,9 +110,29 @@ namespace Squareosity
 
                 isTouching = true;
             }
-            
+             
+            else if (fixa.BodyId == 8 && fixb.BodyId == 10)
+            {
                 
+                for (int k = 0; k < chainLinks.Count; ++k)
+                {
+                    if (chainLinks[k].Equals(fixa))
+                    {
+                        for (int c = 0; c < joints.Count; ++c)
+                        {
+                            if (joints[c].BodyA.Equals(chainLinks[k]))
+                            {
 
+                                joints[c].Enabled = false;
+                            }
+
+                        }
+                    }
+
+                }
+
+
+            }
 
         return true;
         }

@@ -120,6 +120,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GamePlay\ChainLink.cs" />
     <Compile Include="GamePlay\HealthGem.cs" />
     <Compile Include="GamePlay\playerLaser.cs" />
     <Compile Include="GamePlay\FX\BloomComponent.cs" />
@@ -129,8 +130,8 @@
     <Compile Include="GamePlay\Cam2D.cs" />
     <Compile Include="GamePlay\Collectable.cs" />
     <Compile Include="GamePlay\Laser.cs" />
-    <Compile Include="GamePlay\Maze.cs" />
     <Compile Include="GamePlay\PlayerBody.cs" />
+    <Compile Include="GamePlay\PowerUp.cs" />
     <Compile Include="GamePlay\SeekerDrone.cs" />
     <Compile Include="GamePlay\Shape.cs" />
     <Compile Include="GamePlay\Square.cs" />
@@ -159,7 +160,7 @@
     <Compile Include="Screens\TestHarness\TestingGround.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="BodyIds.txt" />
+    <Content Include="BodyIdsAndCollisonCats.txt" />
     <Content Include="Game.ico" />
     <Content Include="GameThumbnail.png" />
   </ItemGroup>

@@ -117,7 +117,7 @@ namespace Squareosity
 
                     Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(160, 410), true, world));
                    
-                    spinningWheel = new Shape(content.Load<Texture2D>("Shapes/orangeSpinningWheel"), new Vector2(100, 300), true, world);
+                    spinningWheel = new Shape(content.Load<Texture2D>("Shapes/orangeSpinningWheel"), new Vector2(100, 300), true,false, world);
 
                     FixedRevoluteJoint fixedJoint = new FixedRevoluteJoint(spinningWheel.shapeBody, Vector2.Zero, spinningWheel.shapeBody.Position);
                     world.AddJoint(fixedJoint);
