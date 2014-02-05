@@ -87,14 +87,17 @@ namespace Squareosity
 
 
 
-        public void draw(SpriteBatch batch)
+        public void draw(SpriteBatch batch, bool scoreActive)
         {
 
-            SpriteFont font = content.Load<SpriteFont>("gamefont");
-            Vector2 textPosition = playerBody.Position * 64 - new Vector2(100, 100);
+            
 
-            batch.DrawString(font,score.ToString(), textPosition, Color.White);
-
+            if (scoreActive)
+            {
+                SpriteFont font = content.Load<SpriteFont>("gamefont");
+                Vector2 textPosition = playerBody.Position * 64 - new Vector2(100, 100);
+                batch.DrawString(font, score.ToString(), textPosition, Color.White);
+            }
            batch.Draw(tex, playerBody.Position * 64, null, Color.White, playerBody.Rotation, orgin, 1f, SpriteEffects.None, 1f);
            foreach (playerLaser laser in playerLasers)
            {
@@ -104,7 +107,7 @@ namespace Squareosity
       
         }
 
-        public void detectInput(KeyboardState keyboardState, MouseState mouse, Vector2 camPos)
+        public void detectInput(KeyboardState keyboardState, MouseState mouse, Vector2 camPos, bool laserActive)
         {
             
             // movement with gamePad.
@@ -116,7 +119,7 @@ namespace Squareosity
                 playerBody.LinearDamping = 1f;
 
                
-                if (GamePad.GetState(PlayerIndex.One).ThumbSticks.Right != Vector2.Zero)
+                if (GamePad.GetState(PlayerIndex.One).ThumbSticks.Right != Vector2.Zero && laserActive)
                 {
                     Vector2 velo = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right;
 
@@ -177,7 +180,7 @@ namespace Squareosity
 
                 }
 
-                if (mouse.LeftButton == ButtonState.Pressed)
+                if (mouse.LeftButton == ButtonState.Pressed && laserActive)
                 {
                    
                   

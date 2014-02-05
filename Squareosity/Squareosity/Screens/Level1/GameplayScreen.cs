@@ -520,7 +520,7 @@ namespace Squareosity
             else
             {
 
-                playerBody.detectInput(keyboardState, mouse,cam2D.Position);
+                playerBody.detectInput(keyboardState, mouse,cam2D.Position, true);
             }
         }
 
@@ -600,8 +600,13 @@ namespace Squareosity
                 whip.Draw(spriteBatch);
                 
             }
-            playerBody.draw(spriteBatch);
 
+            
+           
+            playerBody.draw(spriteBatch, true);
+
+
+           
             if (!GamePad.GetState(PlayerIndex.One).IsConnected && IsActive == true)
             {
                 mouse = Mouse.GetState();

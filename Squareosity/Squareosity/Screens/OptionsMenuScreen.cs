@@ -22,10 +22,12 @@ namespace Squareosity
     {
         #region Fields
 
+        MenuEntry tutlevel;
         MenuEntry level1;
         MenuEntry level2;
         MenuEntry level3;
 
+        string tutlevelText = "Welcome to the System.";
         string level1Text = "Level 1: Spaaace!";
         string level2Text = "Level 2: More Spaaace!";
         string level3Text = "Level 3: Test Your Might!";
@@ -43,7 +45,7 @@ namespace Squareosity
             : base("Level Select")
         {
             // Create our menu entries.
-
+            tutlevel = new MenuEntry(tutlevelText);
             level1 = new MenuEntry(level1Text);
             level2 = new MenuEntry(level2Text);
             level3 = new MenuEntry(level3Text);
@@ -54,6 +56,7 @@ namespace Squareosity
             // Hook up menu event handlers.
             
             back.Selected += OnCancel;
+            tutlevel.Selected += tutlevel_Selected;
             level1.Selected += level1_Selected;
             level2.Selected += level2_Selected;
             level3.Selected += level3_Selected;
@@ -61,6 +64,7 @@ namespace Squareosity
 
 
             // Add entries to the menu.
+            MenuEntries.Add(tutlevel);
             MenuEntries.Add(level1);
             MenuEntries.Add(level2);
             MenuEntries.Add(level3);
@@ -82,6 +86,11 @@ namespace Squareosity
         #region Handle Input
 
 
+        void tutlevel_Selected(object sender, PlayerIndexEventArgs e)
+        {
+            LoadingScreen.Load(ScreenManager, true, e.PlayerIndex,
+                                new TutLevel1());
+        }
         void level1_Selected(object sender, PlayerIndexEventArgs e)
         {
             LoadingScreen.Load(ScreenManager, true, e.PlayerIndex,

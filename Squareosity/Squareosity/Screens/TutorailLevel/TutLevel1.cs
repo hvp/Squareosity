@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 using GameStateManagement;
 
@@ -20,7 +21,7 @@ using FarseerPhysics.Dynamics.Joints;
 
 namespace Squareosity
 {
-    class level2Screen : GameScreen
+    class TutLevel1: GameScreen
     {
 
         #region Fields
@@ -28,7 +29,9 @@ namespace Squareosity
         ContentManager content;
         SpriteFont gameFont;
         PlayerBody playerBody;
-        GamePadState previousGamePadState;
+
+        bool laserActive = false;
+        bool scoreActive = false;
         MouseState mouse;
         Cam2d cam2D;
         BloomComponent bloom;
@@ -42,10 +45,18 @@ namespace Squareosity
         List<SeekerDrone> Drones = new List<SeekerDrone>();
         List<Collectable> Collectables = new List<Collectable>();
 
-
-
         Texture2D reticle;
         InputAction pauseAction;
+
+        // variables for level progression 
+        bool stage1GreenTocuh = false;
+        bool stage2BlueTouch = false;
+        int choice = 0;
+
+        // 
+
+        SongCollection songs;
+        
 
         #endregion
 
@@ -56,7 +67,7 @@ namespace Squareosity
         /// Constructor.
         /// </summary>
 
-        public level2Screen()
+        public TutLevel1()
         {
             TransitionOnTime = TimeSpan.FromSeconds(1.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
@@ -64,7 +75,7 @@ namespace Squareosity
 
             world = new World(new Vector2(0, 0));
 
-
+           
             // define and action 
             pauseAction = new InputAction(
                 new Buttons[] { Buttons.Start, Buttons.Back },
@@ -94,34 +105,10 @@ namespace Squareosity
                 /// player 
                 playerBody = new PlayerBody(content.Load<Texture2D>("redPlayer"), world, content);
 
-                // drones - can only have two without performance issues 
-                {
-
-                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(100, 500), world, content, 10));
-                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(200, 150), world, content, 9));
-                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(300, 200), world, content, 12));
-                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(400, 250), world, content, 14));
-                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(500, 300), world, content, 20));
-                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(600, 350), world, content, 25));
-
-                    Drones[0].Stationary = true;
-                    Drones[5].Stationary = true;
-
-
-                }
-
-                {
-
-                         Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(0, 50), world));
-                         Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(400, 50), world));
-                         Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(240, 350), world));
-                         Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(300, 400), world));
-                         Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(300, 550), world));
-                }
                
                 int space = 0;
-                int i = 0;
-                for (; i < 11; i++)
+
+                for (int i = 0; i < 11; i++)
                 {
                     Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(space - 5, 0), true, world));
                     Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(space - 5, 600), true, world));
@@ -136,7 +123,7 @@ namespace Squareosity
                     space += 100;
                 }
 
-                Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(1050, 45 ), false, world));
+                Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(1050, 45), false, world));
                 Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(1050, 555), false, world));
 
                 // set cam track 
@@ -208,87 +195,27 @@ namespace Squareosity
                 bloom.Settings = BloomSettings.PresetSettings[bloomSettingsIndex];
                 
                 // update entites
-                playerBody.update(gameTime);
+              
+                    playerBody.update(gameTime);
+                
 
-                foreach (Collectable star in Collectables)
-                {
-                    if (star.collected)
-                    {
-                        playerBody.updateScore(2);
-                        world.RemoveBody(star.collectableBody);
-                    }
-
-                }
-                for (int k = 0; k < Collectables.Count; ++ k)
-                {
-                    if (Collectables[k].collected)
-                    {
-                        Collectables.RemoveAt(k);
-
-                    }
-
-                }
-
-
-                foreach (SeekerDrone drone in Drones)
-                {
-                   drone.setTarget(playerBody.playerBody.Position * 64);
-                 
-                   
-                    drone.update(gameTime);
-
-                    if (drone.getIsDead)
-                    {
-                        world.RemoveBody(drone.getBody);
-                        
-                        playerBody.updateScore(2); /// updater this to a getter and setter!!!
-                    }
-                }
-
-                for (int k = 0; k < Drones.Count; ++k)
-                {
-                    if (Drones[k].getIsDead)
-                    {
-                        Drones.RemoveAt(k);
-                    }
-                }
-                foreach (Square square in Squares)
-                {
-                    square.Update();
-                    if (square.isTouching)
-                    {
-                        playerBody.isAlive = false;
-                    }
-                }
+              
                 if (playerBody.isAlive == false)
                 {
                     bloom.Visible = false;
-                    
+                  
                     world.Clear();
                    
                     
                     this.ExitScreen();
-                    bloom.Visible = false;
+
                     LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new DeadScreen(2));
 
                 }
                 
                 //game script 
 
-                if (playerBody.getScore() == 12 && Collectables.Count == 0)
-                {
-                    Collectables.Add(new Collectable(content.Load<Texture2D>("redStar"), new Vector2(400, 400),world));
 
-                 
-                
-                }
-                if (playerBody.getScore() == 14)
-                {
-                    ExitScreen();
-                    bloom.Visible = false;
-                        LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new level3Screen());
-                    
-                }
                
 
                 // limts on the cam. 
@@ -340,7 +267,8 @@ namespace Squareosity
             }
             else
             {
-                playerBody.detectInput(keyboardState, mouse, cam2D.Position,true);
+              
+                playerBody.detectInput(keyboardState, mouse, cam2D.Position, laserActive);
             }
         }
 
@@ -368,12 +296,6 @@ namespace Squareosity
                 drone.draw(spriteBatch);
             }
 
-
-            foreach (Collectable star in Collectables)
-            {
-                star.draw(spriteBatch);
-
-            }
             foreach (Square square in Squares)
             {
                 square.Draw(spriteBatch);
@@ -389,7 +311,7 @@ namespace Squareosity
 
             }
 
-            if (!GamePad.GetState(PlayerIndex.One).IsConnected && IsActive == true)
+            if ((!GamePad.GetState(PlayerIndex.One).IsConnected) && laserActive)
             {
               
                 Vector2 mousePos = new Vector2(mouse.X, mouse.Y);
@@ -397,8 +319,8 @@ namespace Squareosity
         
             }
            
-
-            playerBody.draw(spriteBatch, true);
+            // add a 'draw score' bool
+            playerBody.draw(spriteBatch, scoreActive);
 
 
 
