@@ -34,10 +34,13 @@ namespace Squareosity
          Texture2D tex;
          public bool isAlive = true;
 
+         bool laserActive = true;
+
          KeyboardState oldKeyState;
          int health = 100;
          int score;
 
+         int choice = 99;
          List<playerLaser> playerLasers = new List<playerLaser>();
          ContentManager content;
          World world;
@@ -107,7 +110,7 @@ namespace Squareosity
       
         }
 
-        public void detectInput(KeyboardState keyboardState, MouseState mouse, Vector2 camPos, bool laserActive)
+        public void detectInput(KeyboardState keyboardState, MouseState mouse, Vector2 camPos)
         {
             
             // movement with gamePad.
@@ -131,7 +134,20 @@ namespace Squareosity
 
                 }
 
+                if (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed)
+                {
+                    choice = 1;
+                }
+                else if (GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed)
+                {
+                    choice = 2;
 
+                }
+                else if (GamePad.GetState(PlayerIndex.One).Buttons.X == ButtonState.Pressed)
+                {
+                    choice = 3;
+
+                }
 
             }
             else
@@ -212,7 +228,24 @@ namespace Squareosity
 
 
         }
+        /// <summary>
+        /// If the value is 99 we are waiting for input from the player 
+        /// A = 1
+        /// B = 2
+        /// X = 3
+        /// </summary>
+        public int choiceValue
+        {
+            get { return choice; }
 
+
+        }
+        public bool getSetLaserStatus
+        {
+            set { laserActive = value; }
+            get { return laserActive; }
+
+        }
         public List<playerLaser> getLasers
         {
 

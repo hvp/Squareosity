@@ -151,6 +151,13 @@ namespace Squareosity
                         bloom.Visible = false;
                         LoadingScreen.Load(ScreenManager, false, ControllingPlayer, new level3Screen());
                     }
+                    else if (levelFrom == 0)
+                    {
+                        ExitScreen();
+                        bloom.Visible = false;
+                        LoadingScreen.Load(ScreenManager, false, ControllingPlayer, new TutLevel1());
+
+                    }
                     
                 }
                // enter or a is continue 

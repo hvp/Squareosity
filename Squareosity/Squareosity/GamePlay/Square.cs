@@ -29,6 +29,7 @@ namespace Squareosity
         float size = 10.0f / 64.0f;
 
       public  bool isTouching = false;
+      public bool isTouchingLaser = false;
 
         public Square(Texture2D tex, Vector2 pos, World world)
         {
@@ -38,12 +39,25 @@ namespace Squareosity
             squareBody.BodyId = 2;
             squareBody.CollisionCategories = Category.Cat7;
             squareBody.CollidesWith = Category.All ^ Category.Cat2;
+            squareBody.OnCollision += new OnCollisionEventHandler(OnCollision);
+            squareBody.OnSeparation += new OnSeparationEventHandler(OnSeparation);
+        }
+
+        public Square(Texture2D tex, Vector2 pos, bool laserCollision,World world)
+        {
+            this.tex = tex;
+            squareBody = BodyFactory.CreateRectangle(world, size, size, 1f, pos / 64);
+            squareBody.BodyType = BodyType.Static;
+            squareBody.BodyId = 2;
+            squareBody.CollisionCategories = Category.Cat20;
+            squareBody.CollidesWith = Category.All ^ Category.Cat2;
+            squareBody.OnCollision += new OnCollisionEventHandler(OnCollision);
+            squareBody.OnSeparation += new OnSeparationEventHandler(OnSeparation);
         }
 
         public void Update()
         {
-            squareBody.OnCollision += new OnCollisionEventHandler(OnCollision);
-            squareBody.OnSeparation +=new OnSeparationEventHandler(OnSeparation);
+            
 
             if (isTouching)
             {
@@ -64,6 +78,10 @@ namespace Squareosity
             if (fixA.BodyId == 2 && fixB.BodyId == 1)
             {
                 isTouching = true;
+            }
+            else if(fixA.BodyId == 2 && fixB.BodyId == 10)
+            {
+                isTouchingLaser = true;
             }
 
             return true;

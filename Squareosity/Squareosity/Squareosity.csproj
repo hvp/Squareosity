@@ -159,6 +159,7 @@
     <Compile Include="Screens\TemplateLevel\TemplateLevel.cs" />
     <Compile Include="Screens\TestHarness\TestingGround.cs" />
     <Compile Include="Screens\TutorailLevel\TutLevel1.cs" />
+    <Compile Include="UI\ChoiceDisplay.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="BodyIdsAndCollisonCats.txt" />

@@ -166,7 +166,7 @@ namespace Squareosity
                         hint = "Remember! Blue and red neon are safe!";
                         break;
                     case 1:
-                        hint = "Collect the red stars";
+                        hint = "Collect the red stars!";
                         break;
                     case 2:
                         hint = "Seeker drones only activate at certian ranges!";

@@ -48,9 +48,19 @@ namespace Squareosity
         Texture2D reticle;
         InputAction pauseAction;
 
+        ChoiceDisplay UI;
+
+        Shape Vivi;
+
+        double Timer = 0;
+
         // variables for level progression 
-        bool stage1GreenTocuh = false;
-        bool stage2BlueTouch = false;
+        double timerForGreenTest = 750;
+        bool GreenTestStarted  = false;
+        bool GreenTestComplete = false;
+ 
+        bool BlueTestStarted = false;
+        bool BlueTestComplete = false;
         int choice = 0;
 
         // 
@@ -100,10 +110,18 @@ namespace Squareosity
                 ScreenManager.Game.Components.Add(bloom);
 
 
+                Vivi = new Shape(content.Load<Texture2D>("pinkVivi"), new Vector2(200, 100), true, true, world);
+
+                UI = new ChoiceDisplay(content.Load<Texture2D>("a-Button"), content.Load<Texture2D>("b-Button"),
+                    content.Load<Texture2D>("x-Button"), null, "No, Let's go!.","Who am I?", "Where am I?!", null, content);
+                UI.Acitve = false;
+             
+
                 cam2D = new Cam2d(ScreenManager.GraphicsDevice);
                 reticle = content.Load<Texture2D>("redReticle");
                 /// player 
                 playerBody = new PlayerBody(content.Load<Texture2D>("redPlayer"), world, content);
+                playerBody.getSetLaserStatus = false;
 
                
                 int space = 0;
@@ -209,14 +227,78 @@ namespace Squareosity
                     
                     this.ExitScreen();
 
-                    LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new DeadScreen(2));
+                    LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new DeadScreen(0));
 
                 }
+
+
                 
                 //game script 
 
 
-               
+                Timer += gameTime.ElapsedGameTime.Milliseconds;
+
+                if (Timer > timerForGreenTest && GreenTestStarted == false)
+                {
+
+                    Timer = 0;
+                    GreenTestStarted = true;
+                    // sound affect play
+
+                    UI.setSub = "Welcome my name is Vivi. Move to and touch the green square to continue.";
+                    Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(800, 100),true, world));
+                }
+
+                if (GreenTestStarted == true && GreenTestComplete == false)
+                {
+                    if (Squares[0].isTouching)
+                    {
+                        GreenTestComplete = true;
+                        BlueTestStarted = true;
+                        UI.setSub = "Wonderful, now fire your laser at the blue square";
+                        Squares.Add(new Square(content.Load<Texture2D>("Squares/blueSquare"), new Vector2(100, 500),true, world));
+                        playerBody.getSetLaserStatus = true;
+                        Squares.RemoveAt(0);
+                    }
+
+                   
+                }
+
+                /// need to add pick up test!!!
+                if (BlueTestStarted && BlueTestComplete == false)
+                {
+                    if (Squares[0].isTouchingLaser)
+                    {
+                        BlueTestComplete = true;
+                        Squares.RemoveAt(0);
+                        UI.setSub = "You are confirmed operational. Questions?";
+                        UI.Acitve = true;
+                    }
+
+                }
+
+                if (BlueTestComplete && GreenTestComplete)
+                {
+
+                    while (playerBody.choiceValue != 1)
+                    {
+                        if (playerBody.choiceValue == 2)
+                        {
+                            UI.setSub = "You are designated as an Operational perpetuating organism or Opo.";
+
+
+                        }
+                        else if (playerBody.choiceValue == 3)
+                        {
+                            UI.setSub = "You are in the System.";
+
+                        }
+
+                    }
+
+                }
+
+                
 
                 // limts on the cam. 
 
@@ -268,7 +350,7 @@ namespace Squareosity
             else
             {
               
-                playerBody.detectInput(keyboardState, mouse, cam2D.Position, laserActive);
+                playerBody.detectInput(keyboardState, mouse, cam2D.Position);
             }
         }
 
@@ -301,8 +383,8 @@ namespace Squareosity
                 square.Draw(spriteBatch);
                 if (square.isTouching)
                 {
-                    ScreenManager.GraphicsDevice.Clear(Color.White);
-                }  
+
+                }
             }
 
             foreach (Wall wall in Walls)
@@ -311,7 +393,7 @@ namespace Squareosity
 
             }
 
-            if ((!GamePad.GetState(PlayerIndex.One).IsConnected) && laserActive)
+            if ((!GamePad.GetState(PlayerIndex.One).IsConnected) && playerBody.getSetLaserStatus)
             {
               
                 Vector2 mousePos = new Vector2(mouse.X, mouse.Y);
@@ -324,7 +406,13 @@ namespace Squareosity
 
 
 
+            Vivi.Draw(spriteBatch);
 
+            spriteBatch.End();
+
+            spriteBatch.Begin();
+
+            UI.Draw(spriteBatch);
             spriteBatch.End();
 
 
