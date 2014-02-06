@@ -603,7 +603,7 @@ namespace Squareosity
 
             
            
-            playerBody.draw(spriteBatch, true);
+            playerBody.draw(spriteBatch);
 
 
            

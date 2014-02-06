@@ -25,7 +25,7 @@ namespace Squareosity
         Texture2D tex;
         Vector2 pos;
         Vector2 orgin = new Vector2(5, 5);
-        Body squareBody;
+       public  Body squareBody;
         float size = 10.0f / 64.0f;
 
       public  bool isTouching = false;

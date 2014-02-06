@@ -35,6 +35,7 @@ namespace Squareosity
          public bool isAlive = true;
 
          bool laserActive = true;
+         bool scoreActive = true;
 
          KeyboardState oldKeyState;
          int health = 100;
@@ -90,7 +91,7 @@ namespace Squareosity
 
 
 
-        public void draw(SpriteBatch batch, bool scoreActive)
+        public void draw(SpriteBatch batch)
         {
 
             
@@ -238,6 +239,12 @@ namespace Squareosity
         {
             get { return choice; }
 
+
+        }
+        public bool getSetDrawScore
+        {
+            get { return scoreActive; }
+            set { scoreActive = value; }
 
         }
         public bool getSetLaserStatus

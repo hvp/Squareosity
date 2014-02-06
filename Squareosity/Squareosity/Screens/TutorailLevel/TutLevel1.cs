@@ -59,8 +59,12 @@ namespace Squareosity
         bool GreenTestStarted  = false;
         bool GreenTestComplete = false;
  
+
         bool BlueTestStarted = false;
         bool BlueTestComplete = false;
+
+        bool pressedOk = false;
+        bool progressLoaded = false;
         int choice = 0;
 
         // 
@@ -115,6 +119,7 @@ namespace Squareosity
                 UI = new ChoiceDisplay(content.Load<Texture2D>("a-Button"), content.Load<Texture2D>("b-Button"),
                     content.Load<Texture2D>("x-Button"), null, "No, Let's go!.","Who am I?", "Where am I?!", null, content);
                 UI.Acitve = false;
+                
              
 
                 cam2D = new Cam2d(ScreenManager.GraphicsDevice);
@@ -122,7 +127,7 @@ namespace Squareosity
                 /// player 
                 playerBody = new PlayerBody(content.Load<Texture2D>("redPlayer"), world, content);
                 playerBody.getSetLaserStatus = false;
-
+                playerBody.getSetDrawScore = false;
                
                 int space = 0;
 
@@ -236,8 +241,10 @@ namespace Squareosity
                 //game script 
 
 
-                Timer += gameTime.ElapsedGameTime.Milliseconds;
-
+                if (GreenTestStarted == false)
+                {
+                    Timer += gameTime.ElapsedGameTime.Milliseconds;
+                }
                 if (Timer > timerForGreenTest && GreenTestStarted == false)
                 {
 
@@ -255,9 +262,10 @@ namespace Squareosity
                     {
                         GreenTestComplete = true;
                         BlueTestStarted = true;
-                        UI.setSub = "Wonderful, now fire your laser at the blue square";
+                        UI.setSub = "Wonderful, now fire your laser at the blue square.";
                         Squares.Add(new Square(content.Load<Texture2D>("Squares/blueSquare"), new Vector2(100, 500),true, world));
                         playerBody.getSetLaserStatus = true;
+                        world.RemoveBody(Squares[0].squareBody); 
                         Squares.RemoveAt(0);
                     }
 
@@ -270,6 +278,7 @@ namespace Squareosity
                     if (Squares[0].isTouchingLaser)
                     {
                         BlueTestComplete = true;
+                        world.RemoveBody(Squares[0].squareBody); 
                         Squares.RemoveAt(0);
                         UI.setSub = "You are confirmed operational. Questions?";
                         UI.Acitve = true;
@@ -277,27 +286,92 @@ namespace Squareosity
 
                 }
 
-                if (BlueTestComplete && GreenTestComplete)
+                if (BlueTestComplete && GreenTestComplete && pressedOk == false)
                 {
 
-                    while (playerBody.choiceValue != 1)
-                    {
+                   
                         if (playerBody.choiceValue == 2)
                         {
-                            UI.setSub = "You are designated as an Operational perpetuating organism or Opo.";
+                            UI.setSub = "You are designated as an Operational Perpetuating Organism. Or Opo.";
+                            UI.setTextA = "Ok, let's go!";
 
 
                         }
                         else if (playerBody.choiceValue == 3)
                         {
                             UI.setSub = "You are in the System.";
+                            UI.setTextA = "Ok, let's go!";
 
+                        }
+                        else if (playerBody.choiceValue == 1)
+                        {
+                            pressedOk = true;
+                            UI.Acitve = false;
+                            UI.setSub = "Loading progresss tracker.";
+                            
+                            
                         }
 
                     }
 
+                if (pressedOk && progressLoaded == false)
+                {
+                    Timer += gameTime.ElapsedGameTime.Milliseconds;
+                    if (Timer > 1000 && Timer < 2000)
+                    {
+                        UI.setSub = "Three...";
+
+                    }
+                    if (Timer > 2000 && Timer < 3000)
+                    {
+                        UI.setSub = "Two...";
+
+                    }
+                    if (Timer > 3000 && Timer < 4000)
+                    {
+                        UI.setSub = "One...";
+
+                    }
+                    if (Timer > 4000 && Timer < 4500)
+                    {
+                        UI.setSub = "Progress module loaded.";
+                       
+                        playerBody.getSetDrawScore = true;
+                        progressLoaded = true;
+                        Timer = 0;
+                    }
+
                 }
 
+                if (progressLoaded )
+                {
+                    Timer += gameTime.ElapsedGameTime.Milliseconds;
+                    if (Timer > 0 && Timer < 1000)
+                    {
+                        UI.setSub = "Loading System Area..."; 
+
+                    }
+                    if (Timer > 1000 && Timer < 2000)
+                    {
+
+                        UI.setSub = "in Three...";
+                    }
+                    if (Timer > 2000 && Timer < 3000)
+                    {
+                        UI.setSub = "Two...";
+
+                    }
+                    if (Timer > 3000 && Timer < 4000)
+                    {
+                        UI.setSub = "One...";
+
+                    }
+                    if (Timer > 4000)
+                    {
+                        bloom.Visible = false;
+                        LoadingScreen.Load(ScreenManager, true, PlayerIndex.One, new GameplayScreen());
+                    }
+                }
                 
 
                 // limts on the cam. 
@@ -314,6 +388,7 @@ namespace Squareosity
                 world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
             }
         }
+
 
         /// <summary>
         /// Lets the game respond to player input. Unlike the Update method,
@@ -402,7 +477,7 @@ namespace Squareosity
             }
            
             // add a 'draw score' bool
-            playerBody.draw(spriteBatch, scoreActive);
+            playerBody.draw(spriteBatch);
 
 
 
