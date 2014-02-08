@@ -11,6 +11,7 @@ Whip chain link: 8
 Player's Lasers: 10 
 SeekerDrone: 15
 Laser from a seekerDrone: 18
+Pickupable: 19
 
 ////////////////////////////////
 Collision CATS:
@@ -20,5 +21,5 @@ CAT 3 = Chainlink
 CAT 4 = SeekerDrone, bady, Ninja gate shape
 CAT 8 = Spinning wheel (shape)
 
-CAT 7 = Square, Wall
+CAT 7 = Square, Wall, Pickupable
 CAT 

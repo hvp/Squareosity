@@ -28,6 +28,8 @@ using FarseerPhysics.Collision;
 using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Common;
 using FarseerPhysics.Dynamics.Joints;
+
+
 #endregion
 
 namespace Squareosity
@@ -220,9 +222,15 @@ namespace Squareosity
                         }
 
                         space += 100;
-
+                      
 
                     }
+                    Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(space , 100), world));
+                   
+                    Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(space, 300), world));
+                   
+                    Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(space , 500), world));
+
 
                     // extra wall
                     Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(space + 5, 0), true, world));
@@ -311,7 +319,7 @@ namespace Squareosity
                 
 
               
-
+               
             
                 //game script 
                 {
@@ -606,17 +614,7 @@ namespace Squareosity
             playerBody.draw(spriteBatch);
 
 
-           
-            if (!GamePad.GetState(PlayerIndex.One).IsConnected && IsActive == true)
-            {
-                mouse = Mouse.GetState();
-                
-
-                Vector2 mousePos = new Vector2(mouse.X, mouse.Y);
-
-                spriteBatch.Draw(reticle,mousePos + cam2D.Position - new Vector2(1024 / 2, 768 / 2),null,Color.White,0f,new Vector2(10,10),1f,SpriteEffects.None,1f);
-            }
-           
+        
                               
 
             spriteBatch.End();

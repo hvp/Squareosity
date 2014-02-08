@@ -78,7 +78,7 @@ namespace Squareosity
 
         public void Draw(SpriteBatch batch)
         {
-            batch.Draw(texture, laserBody.Position * 64, null, Color.White, laserBody.Rotation, new Vector2(texture.Width / 2f, texture.Height / 2f), 1f, SpriteEffects.None, 1f);
+            batch.Draw(texture, laserBody.Position * 64, null, Color.White, laserBody.Rotation, new Vector2(texture.Width / 2f, texture.Height / 2f), 1f, SpriteEffects.None, 0.8f);
 
 
         }

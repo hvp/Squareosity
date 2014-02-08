@@ -374,6 +374,82 @@
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="pinkArea.png">
+      <Name>pinkArea</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Squares\redSquare.png">
+      <Name>redSquare</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Audio\SoundFX\Vivi_Tut\Vivi_BlueSquare_UK.mp3">
+      <Name>Vivi_BlueSquare_UK</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="Audio\SoundFX\Vivi_Tut\Vivi_EntryPoint.mp3">
+      <Name>Vivi_EntryPoint</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="Audio\SoundFX\Vivi_Tut\Vivi_One.mp3">
+      <Name>Vivi_One</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="Audio\SoundFX\Vivi_Tut\Vivi_PinkSquare_UK.mp3">
+      <Name>Vivi_PinkSquare_UK</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="Audio\SoundFX\Vivi_Tut\Vivi_ProgessLoaded.mp3">
+      <Name>Vivi_ProgessLoaded</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="Audio\SoundFX\Vivi_Tut\Vivi_Progress_Tracker.mp3">
+      <Name>Vivi_Progress_Tracker</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="Audio\SoundFX\Vivi_Tut\Vivi_Questions_UK.mp3">
+      <Name>Vivi_Questions_UK</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="Audio\SoundFX\Vivi_Tut\Vivi_System_UK.mp3">
+      <Name>Vivi_System_UK</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="Audio\SoundFX\Vivi_Tut\Vivi_Three.mp3">
+      <Name>Vivi_Three</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="Audio\SoundFX\Vivi_Tut\Vivi_Two.mp3">
+      <Name>Vivi_Two</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="Audio\SoundFX\Vivi_Tut\Vivi_Welcome_UK.mp3">
+      <Name>Vivi_Welcome_UK</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="Audio\SoundFX\Vivi_Tut\Vivi_You_are_opo_UK.mp3">
+      <Name>Vivi_You_are_opo_UK</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

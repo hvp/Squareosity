@@ -19,16 +19,17 @@ using FarseerPhysics.Common;
 
 namespace Squareosity
 {
+    enum PowerUp
+    {
+        None,
+        PowerLaserBlast
+
+    };
     class PlayerBody
     {
-        enum PowerUp
-        {
-            None,
-            PowerLaserBlast
+      
 
-        };
-
-         PowerUp currentPower = PowerUp.PowerLaserBlast;
+         PowerUp currentPower = PowerUp.None;
          Vector2 pos = new Vector2(1024/2f, 768 / 2f); // graphics pos
          Vector2 orgin = new Vector2(10, 10);
          Texture2D tex;
@@ -40,6 +41,14 @@ namespace Squareosity
          KeyboardState oldKeyState;
          int health = 100;
          int score;
+
+         bool choicePoint = false;
+
+         int attachedObjCount = 0;
+
+         bool wantsToPickUp = false;
+         bool hasPickedUp = false;
+         bool wantsToDrop = false;
 
          int choice = 99;
          List<playerLaser> playerLasers = new List<playerLaser>();
@@ -62,6 +71,7 @@ namespace Squareosity
             playerBody.CollidesWith = Category.All ^ Category.Cat5;
             playerBody.OnCollision +=new OnCollisionEventHandler(playerBody_OnCollision);
             score = 0;
+            this.currentPower = PowerUp.None;
             
 
 
@@ -100,7 +110,7 @@ namespace Squareosity
             {
                 SpriteFont font = content.Load<SpriteFont>("gamefont");
                 Vector2 textPosition = playerBody.Position * 64 - new Vector2(100, 100);
-                batch.DrawString(font, score.ToString(), textPosition, Color.White);
+                batch.DrawString(font, score.ToString(), textPosition, Color.White,0f,new Vector2(0,0),1f,SpriteEffects.None,1f);
             }
            batch.Draw(tex, playerBody.Position * 64, null, Color.White, playerBody.Rotation, orgin, 1f, SpriteEffects.None, 1f);
            foreach (playerLaser laser in playerLasers)
@@ -108,6 +118,8 @@ namespace Squareosity
                laser.Draw(batch);
 
            }
+
+
       
         }
 
@@ -134,22 +146,47 @@ namespace Squareosity
 
 
                 }
+                // may need to intrduce a oldState button state for the game pad.
+                if (choicePoint)
+                {
+
+                    if (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed)
+                    {
+                        choice = 1;
+                    }
+                    else if (GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed)
+                    {
+                        choice = 2;
+
+                    }
+                    else if (GamePad.GetState(PlayerIndex.One).Buttons.X == ButtonState.Pressed)
+                    {
+                        choice = 3;
+
+                    }
+                 
+
+                }
 
                 if (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Pressed)
                 {
-                    choice = 1;
+                    wantsToPickUp = true;
                 }
                 else if (GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Pressed)
                 {
-                    choice = 2;
-
+                    wantsToDrop = true;
                 }
-                else if (GamePad.GetState(PlayerIndex.One).Buttons.X == ButtonState.Pressed)
+
+                if (GamePad.GetState(PlayerIndex.One).Buttons.A == ButtonState.Released)
                 {
-                    choice = 3;
-
+                    wantsToPickUp = false;
+                }
+                else if (GamePad.GetState(PlayerIndex.One).Buttons.B == ButtonState.Released)
+                {
+                    wantsToDrop = false;
                 }
 
+                
             }
             else
             {
@@ -171,6 +208,22 @@ namespace Squareosity
                 if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
                 {
                     this.playerBody.ApplyLinearImpulse(new Vector2(0, -1));
+                }
+
+                if (choicePoint)
+                {
+                    if (keyboardState.IsKeyDown(Keys.Enter) || keyboardState.IsKeyDown(Keys.Enter))
+                    {
+                        this.choice = 1;
+                    }
+                    if (keyboardState.IsKeyDown(Keys.Q) || keyboardState.IsKeyDown(Keys.Q))
+                    {
+                        this.choice = 3;
+                    }
+                    if (keyboardState.IsKeyDown(Keys.E) || keyboardState.IsKeyDown(Keys.E))
+                    {
+                        this.choice = 2;
+                    }
                 }
 
                 if (keyboardState.IsKeyDown(Keys.Space) && oldKeyState.IsKeyUp(Keys.Space))
@@ -241,12 +294,52 @@ namespace Squareosity
 
 
         }
+        public bool getSetChoicePoint
+        {
+            set { choicePoint = true; }
+            get { return choicePoint; }
+        }
+        public PowerUp getSetPowerUp
+        {
+            set { currentPower = value; }
+            get { return currentPower; }
+
+        }
         public bool getSetDrawScore
         {
             get { return scoreActive; }
             set { scoreActive = value; }
 
         }
+
+        public bool getSetWantsToPickUp
+        {
+            set { wantsToPickUp = value; }
+            get { return wantsToPickUp; }
+        }
+        public bool getSetWantsTodrop
+        {
+            set { wantsToDrop = value; }
+            get { return wantsToDrop; }
+        }
+        public bool getSetHasPickedUp
+        {
+            set{hasPickedUp = value;}
+            get { return hasPickedUp; }
+        }
+        public void incrementAttachedObjCount()
+        {
+            this.attachedObjCount += 1;
+
+        }
+        public void decrementAttachedObjCount()
+        {
+            
+            this.attachedObjCount -= 1;
+
+        }
+     
+
         public bool getSetLaserStatus
         {
             set { laserActive = value; }

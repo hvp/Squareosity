@@ -44,6 +44,11 @@ namespace Squareosity
         List<Square> Squares = new List<Square>();
         List<SeekerDrone> Drones = new List<SeekerDrone>();
         List<Collectable> Collectables = new List<Collectable>();
+        List<DistanceJoint> Joints = new List<DistanceJoint>();
+        List<Pickupable> pickuables = new List<Pickupable>();
+        List<Area> Areas = new List<Area>();
+
+        Area pinkArea;
 
         Texture2D reticle;
         InputAction pauseAction;
@@ -51,6 +56,9 @@ namespace Squareosity
         ChoiceDisplay UI;
 
         Shape Vivi;
+
+        Song Welcome, Blue, Pink, iniProgress, progressLoadedSFX, 
+            Questions, One, Two, Three, Opo, System, entryPoint;
 
         double Timer = 0;
 
@@ -62,6 +70,11 @@ namespace Squareosity
 
         bool BlueTestStarted = false;
         bool BlueTestComplete = false;
+
+        bool PinkTestStarted = false;
+        bool PinkTestCompleted = false;
+
+        bool countDownStated = false;
 
         bool pressedOk = false;
         bool progressLoaded = false;
@@ -112,16 +125,34 @@ namespace Squareosity
 
                 bloom = new BloomComponent(ScreenManager.Game);
                 ScreenManager.Game.Components.Add(bloom);
+                /*
+                 * Welcome, Blue, Pink, iniProgress, progressLoadedSFX, 
+            Questions, One, Two, Three, Opo, System, entryPoint;
+                 * 
+                 */
 
+                Welcome = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_Welcome_UK");
+                Blue = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_BlueSquare_UK");
+                Pink = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_PinkSquare_UK");
+                Questions = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_Questions_UK");
+                iniProgress = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_Progress_Tracker");
+                progressLoadedSFX = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_ProgessLoaded");
+                One = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_One");
+                Two = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_Two");
+                Three = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_Three");
+                Opo = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_You_are_opo_UK");
+                System = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_System_UK");
+                entryPoint = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_EntryPoint");
+                
 
                 Vivi = new Shape(content.Load<Texture2D>("pinkVivi"), new Vector2(200, 100), true, true, world);
-
+              
                 UI = new ChoiceDisplay(content.Load<Texture2D>("a-Button"), content.Load<Texture2D>("b-Button"),
                     content.Load<Texture2D>("x-Button"), null, "No, Let's go!.","Who am I?", "Where am I?!", null, content);
                 UI.Acitve = false;
-                
-             
 
+
+              
                 cam2D = new Cam2d(ScreenManager.GraphicsDevice);
                 reticle = content.Load<Texture2D>("redReticle");
                 /// player 
@@ -220,7 +251,38 @@ namespace Squareosity
                 // update entites
               
                     playerBody.update(gameTime);
-                
+
+                    foreach (Pickupable pickupable in pickuables)
+                    {
+                        if (pickupable.getSetIsTouchingPlayer && playerBody.getSetWantsToPickUp && !playerBody.getSetHasPickedUp)
+                        {
+                            // joints.Add ( JointFactory.CreateRevoluteJoint(world,playerBody.playerBody,
+                            //   pickupable.getBody, new Vector2(0,0)));
+
+                            Joints.Add(JointFactory.CreateDistanceJoint(world, playerBody.playerBody, pickupable.getBody, new Vector2(0, 0), new Vector2(0, 0)));
+
+
+                            playerBody.getSetWantsToPickUp = false;
+                            pickupable.getSetIsAttachedToPlayer = true;
+
+
+
+                            playerBody.getSetHasPickedUp = true;
+
+                        }
+
+                        if (Joints.Count > 0 && playerBody.getSetWantsTodrop && playerBody.getSetHasPickedUp && pickupable.getSetIsAttachedToPlayer)
+                        {
+                            // for some reason the on seperation dosn't work when removing a joint. So we force the pickupable to not touching the player 
+                            world.RemoveJoint(Joints[0]);
+                            Joints.RemoveAt(0);
+                            playerBody.getSetHasPickedUp = false;
+                            pickupable.getSetIsAttachedToPlayer = false;
+                            pickupable.getSetIsTouchingPlayer = false;
+
+
+                        }
+                    }
 
               
                 if (playerBody.isAlive == false)
@@ -250,10 +312,11 @@ namespace Squareosity
 
                     Timer = 0;
                     GreenTestStarted = true;
-                    // sound affect play
+                    
 
-                    UI.setSub = "Welcome my name is Vivi. Move to and touch the green square to continue.";
-                    Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(800, 100),true, world));
+                    UI.setSub = "Welcome my name is Vivi. Move to and touch the red square to continue.";
+                    Squares.Add(new Square(content.Load<Texture2D>("Squares/redSquare"), new Vector2(800, 100),true, world));
+                    MediaPlayer.Play(Welcome);
                 }
 
                 if (GreenTestStarted == true && GreenTestComplete == false)
@@ -263,6 +326,7 @@ namespace Squareosity
                         GreenTestComplete = true;
                         BlueTestStarted = true;
                         UI.setSub = "Wonderful, now fire your laser at the blue square.";
+                        MediaPlayer.Play(Blue);
                         Squares.Add(new Square(content.Load<Texture2D>("Squares/blueSquare"), new Vector2(100, 500),true, world));
                         playerBody.getSetLaserStatus = true;
                         world.RemoveBody(Squares[0].squareBody); 
@@ -272,7 +336,7 @@ namespace Squareosity
                    
                 }
 
-                /// need to add pick up test!!!
+        
                 if (BlueTestStarted && BlueTestComplete == false)
                 {
                     if (Squares[0].isTouchingLaser)
@@ -280,13 +344,52 @@ namespace Squareosity
                         BlueTestComplete = true;
                         world.RemoveBody(Squares[0].squareBody); 
                         Squares.RemoveAt(0);
-                        UI.setSub = "You are confirmed operational. Questions?";
-                        UI.Acitve = true;
+
+                        UI.setSub = "Excellent, now pick up and move the pink square into the pink area.";
+                        MediaPlayer.Play(Pink);
+                        pickuables.Add(new Pickupable(content.Load<Texture2D>("Squares/pinkSquare"), new Vector2(10, 50), world));
+                        Areas.Add(new Area(content.Load<Texture2D>("pinkArea"), new Vector2(800, 500), 1.57f, world));
+
+                        Timer = 0;
+                       
                     }
 
                 }
 
-                if (BlueTestComplete && GreenTestComplete && pressedOk == false)
+                if (BlueTestComplete && GreenTestComplete)
+                {
+                    PinkTestStarted = true;
+
+                    if (PinkTestCompleted == false)
+                    {
+                        if (Areas[0].getIsPickUpTouching && playerBody.getSetHasPickedUp == false)
+                        {
+                            PinkTestCompleted = true;
+                            pickuables.RemoveAt(0);
+                            Areas.RemoveAt(0);
+
+                        }
+                    }
+
+
+                }
+
+                if ( PinkTestCompleted && UI.Acitve == false && countDownStated == false)
+                {
+                    // some perfomance issues when this loads.
+                    UI.setSub = "You are confirmed operational. Remember only blue, red and pink neon is safe to touch. Questions?";
+                    MediaPlayer.Play(Questions);
+                    Timer += gameTime.ElapsedGameTime.Milliseconds;
+                    if (Timer > 1500)
+                    {
+                        UI.Acitve = true;
+                        playerBody.getSetChoicePoint = true;
+                        countDownStated = true;
+                        Timer = 0;
+
+                    }
+                }
+                if (BlueTestComplete && GreenTestComplete && PinkTestCompleted && pressedOk == false)
                 {
 
                    
@@ -307,7 +410,8 @@ namespace Squareosity
                         {
                             pressedOk = true;
                             UI.Acitve = false;
-                            UI.setSub = "Loading progresss tracker.";
+                            UI.setSub = "Loading progress tracker.";
+                            Timer = 0;
                             
                             
                         }
@@ -346,27 +450,27 @@ namespace Squareosity
                 if (progressLoaded )
                 {
                     Timer += gameTime.ElapsedGameTime.Milliseconds;
-                    if (Timer > 0 && Timer < 1000)
-                    {
-                        UI.setSub = "Loading System Area..."; 
-
-                    }
                     if (Timer > 1000 && Timer < 2000)
                     {
+                        UI.setSub = "Loading courpution "; 
 
-                        UI.setSub = "in Three...";
                     }
                     if (Timer > 2000 && Timer < 3000)
+                    {
+
+                        UI.setSub = "Three...";
+                    }
+                    if (Timer > 3000 && Timer < 4000)
                     {
                         UI.setSub = "Two...";
 
                     }
-                    if (Timer > 3000 && Timer < 4000)
+                    if (Timer > 4000 && Timer < 5000)
                     {
                         UI.setSub = "One...";
 
                     }
-                    if (Timer > 4000)
+                    if (Timer > 5000)
                     {
                         bloom.Visible = false;
                         LoadingScreen.Load(ScreenManager, true, PlayerIndex.One, new GameplayScreen());
@@ -461,10 +565,18 @@ namespace Squareosity
 
                 }
             }
-
+            foreach (Area area in Areas)
+            {
+                area.Draw(spriteBatch);
+            }
             foreach (Wall wall in Walls)
             {
                 wall.Draw(spriteBatch);
+
+            }
+            foreach (Pickupable pickupable in pickuables)
+            {
+                pickupable.Draw(spriteBatch);
 
             }
 
@@ -476,9 +588,8 @@ namespace Squareosity
         
             }
            
-            // add a 'draw score' bool
+          
             playerBody.draw(spriteBatch);
-
 
 
             Vivi.Draw(spriteBatch);

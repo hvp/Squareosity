@@ -45,28 +45,36 @@ namespace Squareosity
         }
         public void Draw(SpriteBatch batch)
         {
-            if (active /*&& GamePad.GetState(PlayerIndex.One).IsConnected*/)
+            if (active)
             {
-               
                 Vector2 AtextSize = font.MeasureString(AText);
-                Vector2 AtextPos = new Vector2(postion.X - (AtextSize.X / 2f),postion.Y + 10 + AtextSize.Y) ;
-                batch.Draw(A, postion, null,Color.White,0f,orgin,1f,SpriteEffects.None,1f);
-                batch.DrawString(font, AText, AtextPos, Color.White);
-
+                Vector2 AtextPos = new Vector2(postion.X - (AtextSize.X / 2f), postion.Y + 10 + AtextSize.Y);
 
                 Vector2 BtextSize = font.MeasureString(BText);
                 Vector2 BtextPos = new Vector2(postion.X + 65, postion.Y - 40 - (BtextSize.Y / 2));
-                batch.Draw(B, postion + new Vector2(40,-40),null ,Color.White,0f, orgin, 1f, SpriteEffects.None, 1f);
-                batch.DrawString(font, BText, BtextPos, Color.White);
-
 
 
                 Vector2 XtextSize = font.MeasureString(XText);
-                Vector2 XtextPos = new Vector2(postion.X - 65 - XtextSize.X , postion.Y - 40 - (XtextSize.Y / 2));
+                Vector2 XtextPos = new Vector2(postion.X - 65 - XtextSize.X, postion.Y - 40 - (XtextSize.Y / 2));
+                if (GamePad.GetState(PlayerIndex.One).IsConnected)
+                {
 
+                   
+                    batch.Draw(A, postion, null, Color.White, 0f, orgin, 1f, SpriteEffects.None, 1f);
+                   
+                    batch.Draw(B, postion + new Vector2(40, -40), null, Color.White, 0f, orgin, 1f, SpriteEffects.None, 1f);
+              
+                    batch.Draw(X, postion + new Vector2(-40, -40), null, Color.White, 0f, orgin, 1f, SpriteEffects.None, 1f);
+                }
+                else
+                {
+                    // draw key art 
+
+                }
+
+                batch.DrawString(font, BText, BtextPos, Color.White);
+                batch.DrawString(font, AText, AtextPos, Color.White);
                 batch.DrawString(font, XText, XtextPos, Color.White);
-
-                batch.Draw(X, postion + new Vector2(-40, -40), null, Color.White, 0f, orgin, 1f, SpriteEffects.None, 1f);
             }
 
             if (Subs != null)

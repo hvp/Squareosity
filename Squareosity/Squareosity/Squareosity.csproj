@@ -120,8 +120,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GamePlay\Area.cs" />
     <Compile Include="GamePlay\ChainLink.cs" />
     <Compile Include="GamePlay\HealthGem.cs" />
+    <Compile Include="GamePlay\Pickupable.cs" />
     <Compile Include="GamePlay\playerLaser.cs" />
     <Compile Include="GamePlay\FX\BloomComponent.cs" />
     <Compile Include="GamePlay\FX\BloomSettings.cs" />
@@ -158,6 +160,7 @@
     <Compile Include="Screens\ScoresScreen\ScoresScreen.cs" />
     <Compile Include="Screens\TemplateLevel\TemplateLevel.cs" />
     <Compile Include="Screens\TestHarness\TestingGround.cs" />
+    <Compile Include="Screens\TestingGround\TestingPickupable.cs" />
     <Compile Include="Screens\TutorailLevel\TutLevel1.cs" />
     <Compile Include="UI\ChoiceDisplay.cs" />
   </ItemGroup>
@@ -210,7 +213,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Screens\CutScenes\" />
-    <Folder Include="Screens\TestingGround\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

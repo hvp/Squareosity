@@ -153,7 +153,7 @@ namespace Squareosity
        
         public void Draw(SpriteBatch batch)
         {
-            batch.Draw(tex, badyBody.Position * 64, null, Color.White, badyBody.Rotation, new Vector2(tex.Width/2,tex.Height /2), 1f, SpriteEffects.None, 1f);
+            batch.Draw(tex, badyBody.Position * 64, null, Color.White, badyBody.Rotation, new Vector2(tex.Width/2,tex.Height /2), 1f, SpriteEffects.None, 0.2f);
 
             foreach (Laser laser in Lasers)
             {

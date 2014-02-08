@@ -79,7 +79,7 @@ namespace Squareosity
         public void Draw(SpriteBatch batch)
         {
 
-            batch.Draw(tex, wallBody.Position * 64, null, Color.White, wallBody.Rotation, orgin, 1f, SpriteEffects.None, 0f);
+            batch.Draw(tex, wallBody.Position * 64, null, Color.White, wallBody.Rotation, orgin, 1f, SpriteEffects.None, 0.1f);
 
 
         }

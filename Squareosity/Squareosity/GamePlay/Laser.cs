@@ -123,7 +123,7 @@ namespace Squareosity
         public void Draw(SpriteBatch batch)
         {
             
-            batch.Draw(tex, laserBody.Position * 64, null, Color.White, laserBody.Rotation, new Vector2(tex.Width / 2f, tex.Height / 2f), 1f, SpriteEffects.None, 1f);
+            batch.Draw(tex, laserBody.Position * 64, null, Color.White, laserBody.Rotation, new Vector2(tex.Width / 2f, tex.Height / 2f), 1f, SpriteEffects.None, 0.1f);
 
 
         }
