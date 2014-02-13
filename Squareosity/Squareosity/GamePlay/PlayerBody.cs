@@ -38,6 +38,8 @@ namespace Squareosity
          bool laserActive = true;
          bool scoreActive = true;
 
+         double fireRate = 300;
+         double timer = 0;
          KeyboardState oldKeyState;
          int health = 100;
          int score;
@@ -123,7 +125,7 @@ namespace Squareosity
       
         }
 
-        public void detectInput(KeyboardState keyboardState, MouseState mouse, Vector2 camPos)
+        public void detectInput(KeyboardState keyboardState, MouseState mouse, Vector2 camPos, GameTime gameTime)
         {
             
             // movement with gamePad.
@@ -134,18 +136,26 @@ namespace Squareosity
                 playerBody.ApplyLinearImpulse(new Vector2(x, -y));
                 playerBody.LinearDamping = 1f;
 
-               
+
                 if (GamePad.GetState(PlayerIndex.One).ThumbSticks.Right != Vector2.Zero && laserActive)
                 {
-                    Vector2 velo = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right;
 
-                    velo = new Vector2(velo.X, -velo.Y);
-                    float rot = VectorToAngle(GamePad.GetState(PlayerIndex.One).ThumbSticks.Right);
-                    playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), velo, playerBody.Position, rot, 2 ,world));
+                    timer += gameTime.ElapsedGameTime.Milliseconds;
+                    if (timer > fireRate)
+                    {
+                        Vector2 velo = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right;
+                        velo = new Vector2(velo.X, -velo.Y);
+                        float rot = VectorToAngle(GamePad.GetState(PlayerIndex.One).ThumbSticks.Right);
+                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), velo, playerBody.Position, rot, 2, world));
 
-
+                    }
 
                 }
+                else // check this.
+                {
+                    timer = 0;
+                }
+
                 // may need to intrduce a oldState button state for the game pad.
                 if (choicePoint)
                 {
@@ -209,7 +219,24 @@ namespace Squareosity
                 {
                     this.playerBody.ApplyLinearImpulse(new Vector2(0, -1));
                 }
-
+                if (keyboardState.IsKeyDown(Keys.Q))
+                {
+                    wantsToPickUp = true;
+                }
+                else if (keyboardState.IsKeyDown(Keys.E))
+                {
+                    wantsToDrop = true;
+                }
+                if (keyboardState.IsKeyUp(Keys.Q))
+                {
+                    wantsToPickUp = false;
+                }
+                else if (keyboardState.IsKeyUp(Keys.E))
+                {
+                    wantsToDrop = false;
+                }
+                
+                
                 if (choicePoint)
                 {
                     if (keyboardState.IsKeyDown(Keys.Enter) || keyboardState.IsKeyDown(Keys.Enter))
@@ -252,25 +279,31 @@ namespace Squareosity
 
                 if (mouse.LeftButton == ButtonState.Pressed && laserActive)
                 {
-                   
-                  
-                     Vector2 mousePos = new Vector2 (mouse.X, mouse.Y);
-                   
-                    
-                    Vector2 target = mousePos + camPos - new Vector2(1024f / 2f, 768f / 2f);
 
-                    
-                     Vector2 direction = target - playerBody.Position * 64; // velocity 
-                     float angle = Angle(playerBody.Position * 64, target);
+                    timer += gameTime.ElapsedGameTime.Milliseconds;
+                    if (timer >= fireRate)
+                    {
+                        Vector2 mousePos = new Vector2(mouse.X, mouse.Y);
 
 
-                   
-                   
-                    playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), direction, playerBody.Position, angle,2 ,world));
+                        Vector2 target = mousePos + camPos - new Vector2(1024f / 2f, 768f / 2f);
 
-                   
+
+                        Vector2 direction = target - playerBody.Position * 64; // velocity 
+                        float angle = Angle(playerBody.Position * 64, target);
+
+
+
+
+                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), direction, playerBody.Position, angle, 2, world));
+                        timer = 0;
+                    }
 
                
+                }
+                else if (mouse.LeftButton == ButtonState.Released)
+                {
+                    timer = 0;
                 }
 
                 oldKeyState = keyboardState;
@@ -296,8 +329,13 @@ namespace Squareosity
         }
         public bool getSetChoicePoint
         {
-            set { choicePoint = true; }
+            set { choicePoint = value; }
             get { return choicePoint; }
+        }
+        public double getSetfireRate
+        {
+            get { return fireRate; }
+            set { fireRate = value; }
         }
         public PowerUp getSetPowerUp
         {

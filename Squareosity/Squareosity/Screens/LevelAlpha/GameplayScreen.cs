@@ -528,7 +528,7 @@ namespace Squareosity
             else
             {
 
-                playerBody.detectInput(keyboardState, mouse,cam2D.Position);
+                playerBody.detectInput(keyboardState, mouse,cam2D.Position, gameTime);
             }
         }
 
@@ -609,7 +609,14 @@ namespace Squareosity
                 
             }
 
-            
+            if (!(GamePad.GetState(PlayerIndex.One).IsConnected))
+            {
+                // for some reason I've had to add a get mouse state here? It works in other levels without. Could casue perfomance issues if not checked.
+                mouse = Mouse.GetState();
+                Vector2 mousePos = new Vector2(mouse.X, mouse.Y);
+                spriteBatch.Draw(reticle, mousePos + cam2D.Position - new Vector2(1024 / 2, 768 / 2), null, Color.White, 0f, new Vector2(10, 10), 1f, SpriteEffects.None, 1f);
+
+            }
            
             playerBody.draw(spriteBatch);
 

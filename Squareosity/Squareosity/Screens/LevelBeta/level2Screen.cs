@@ -20,7 +20,7 @@ using FarseerPhysics.Dynamics.Joints;
 
 namespace Squareosity
 {
-    class TestingPickupable: GameScreen
+    class level2Screen : GameScreen
     {
 
         #region Fields
@@ -38,15 +38,14 @@ namespace Squareosity
 
         List<Wall> Walls = new List<Wall>();
         List<Bady> Badies = new List<Bady>();
-        List<DistanceJoint> joints = new List<DistanceJoint>();
         List<Square> Squares = new List<Square>();
         List<SeekerDrone> Drones = new List<SeekerDrone>();
         List<Collectable> Collectables = new List<Collectable>();
-        List<Pickupable> Pickupables = new List<Pickupable>();
+
+
+
         Texture2D reticle;
         InputAction pauseAction;
-
-        Area area;
 
         #endregion
 
@@ -57,7 +56,7 @@ namespace Squareosity
         /// Constructor.
         /// </summary>
 
-        public TestingPickupable()
+        public level2Screen()
         {
             TransitionOnTime = TimeSpan.FromSeconds(1.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
@@ -88,20 +87,41 @@ namespace Squareosity
 
                 bloom = new BloomComponent(ScreenManager.Game);
                 ScreenManager.Game.Components.Add(bloom);
-                area = new Area(content.Load<Texture2D>("pinkArea"),new Vector2(500,500),0f,world);
+
 
                 cam2D = new Cam2d(ScreenManager.GraphicsDevice);
                 reticle = content.Load<Texture2D>("redReticle");
                 /// player 
                 playerBody = new PlayerBody(content.Load<Texture2D>("redPlayer"), world, content);
 
-                Pickupables.Add(new Pickupable(content.Load<Texture2D>("Squares/pinkSquare"), new Vector2(100, 100), world));
-                Pickupables.Add(new Pickupable(content.Load<Texture2D>("Squares/pinkSquare"), new Vector2(100, 80), world));
-                Pickupables.Add(new Pickupable(content.Load<Texture2D>("Squares/pinkSquare"), new Vector2(120, 100), world));
+                // drones - can only have two without performance issues 
+                {
 
+                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(100, 500), world, content, 10));
+                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(200, 150), world, content, 9));
+                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(300, 200), world, content, 12));
+                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(400, 250), world, content, 14));
+                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(500, 300), world, content, 20));
+                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(600, 350), world, content, 25));
+
+                    Drones[0].Stationary = true;
+                    Drones[5].Stationary = true;
+
+
+                }
+
+                {
+
+                         Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(0, 50), world));
+                         Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(400, 50), world));
+                         Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(240, 350), world));
+                         Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(300, 400), world));
+                         Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(300, 550), world));
+                }
+               
                 int space = 0;
-
-                for (int i = 0; i < 11; i++)
+                int i = 0;
+                for (; i < 11; i++)
                 {
                     Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(space - 5, 0), true, world));
                     Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(space - 5, 600), true, world));
@@ -116,7 +136,7 @@ namespace Squareosity
                     space += 100;
                 }
 
-                Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(1050, 45), false, world));
+                Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(1050, 45 ), false, world));
                 Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(1050, 555), false, world));
 
                 // set cam track 
@@ -189,59 +209,87 @@ namespace Squareosity
                 
                 // update entites
                 playerBody.update(gameTime);
-                
 
-              
+                foreach (Collectable star in Collectables)
+                {
+                    if (star.collected)
+                    {
+                        playerBody.updateScore(2);
+                        world.RemoveBody(star.collectableBody);
+                    }
+
+                }
+                for (int k = 0; k < Collectables.Count; ++ k)
+                {
+                    if (Collectables[k].collected)
+                    {
+                        Collectables.RemoveAt(k);
+
+                    }
+
+                }
+
+
+                foreach (SeekerDrone drone in Drones)
+                {
+                   drone.setTarget(playerBody.playerBody.Position * 64);
+                 
+                   
+                    drone.update(gameTime);
+
+                    if (drone.getIsDead)
+                    {
+                        world.RemoveBody(drone.getBody);
+                        
+                        playerBody.updateScore(2); /// updater this to a getter and setter!!!
+                    }
+                }
+
+                for (int k = 0; k < Drones.Count; ++k)
+                {
+                    if (Drones[k].getIsDead)
+                    {
+                        Drones.RemoveAt(k);
+                    }
+                }
+                foreach (Square square in Squares)
+                {
+                    square.Update();
+                    if (square.isTouching)
+                    {
+                        playerBody.isAlive = false;
+                    }
+                }
                 if (playerBody.isAlive == false)
                 {
                     bloom.Visible = false;
-                  
+                    
                     world.Clear();
                    
                     
                     this.ExitScreen();
-
+                    bloom.Visible = false;
                     LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new DeadScreen(2));
 
                 }
                 
                 //game script 
 
-                foreach (Pickupable pickupable in Pickupables)
+                if (playerBody.getScore() == 12 && Collectables.Count == 0)
                 {
-                   
-                    if (pickupable.getSetIsTouchingPlayer && playerBody.getSetWantsToPickUp && !playerBody.getSetHasPickedUp)
-                    {
-                      // joints.Add ( JointFactory.CreateRevoluteJoint(world,playerBody.playerBody,
-                        //   pickupable.getBody, new Vector2(0,0)));
+                    Collectables.Add(new Collectable(content.Load<Texture2D>("redStar"), new Vector2(400, 400),world));
 
-                       joints.Add( JointFactory.CreateDistanceJoint(world, playerBody.playerBody, pickupable.getBody, new Vector2(0, 0), new Vector2(0, 0)));
-
-
-                        playerBody.getSetWantsToPickUp = false;
-                        pickupable.getSetIsAttachedToPlayer = true;
-
-                       
-
-                        playerBody.getSetHasPickedUp = true;
-                        
-                    }
-
-                    if (joints.Count > 0 && playerBody.getSetWantsTodrop && playerBody.getSetHasPickedUp && pickupable.getSetIsAttachedToPlayer )
-                    {
-                        // for some reason the on seperation dosn't work when removing a joint.
-                        world.RemoveJoint(joints[0]);
-                        joints.RemoveAt(0);
-                        playerBody.getSetHasPickedUp = false;
-                        pickupable.getSetIsAttachedToPlayer = false;
-                        pickupable.getSetIsTouchingPlayer = false;
-
-                        
-                    }
-                   
+                 
+                
                 }
-
-              
+                if (playerBody.getScore() == 14)
+                {
+                    ExitScreen();
+                    bloom.Visible = false;
+                        LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new level3Screen());
+                    
+                }
+               
 
                 // limts on the cam. 
 
@@ -320,11 +368,12 @@ namespace Squareosity
                 drone.draw(spriteBatch);
             }
 
-            foreach (Pickupable pickupable in Pickupables)
-            {
-                pickupable.Draw(spriteBatch);
-            }
 
+            foreach (Collectable star in Collectables)
+            {
+                star.draw(spriteBatch);
+
+            }
             foreach (Square square in Squares)
             {
                 square.Draw(spriteBatch);
@@ -334,15 +383,13 @@ namespace Squareosity
                 }  
             }
 
-            area.Draw(spriteBatch);
-
             foreach (Wall wall in Walls)
             {
                 wall.Draw(spriteBatch);
 
             }
 
-            if (!GamePad.GetState(PlayerIndex.One).IsConnected)
+            if (!GamePad.GetState(PlayerIndex.One).IsConnected && IsActive == true)
             {
               
                 Vector2 mousePos = new Vector2(mouse.X, mouse.Y);

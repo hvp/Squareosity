@@ -29,10 +29,10 @@ namespace Squareosity
         MenuEntry test1;
 
         string tutlevelText = "Welcome to the System.";
-        string level1Text = "Level 1: Spaaace!";
-        string level2Text = "Level 2: More Spaaace!";
-        string level3Text = "Level 3: Test Your Might!";
-        string test1Text = "Test Area.";
+        string level1Text = "Alpha";
+        string level2Text = "Beta";
+        string level3Text = "Gamma";
+        string test1Text = "Pick up objets test.";
         
         
         #endregion
@@ -44,7 +44,7 @@ namespace Squareosity
         /// Constructor.
         /// </summary>
         public OptionsMenuScreen()
-            : base("Level Select")
+            : base("Test Levels")
         {
             // Create our menu entries.
             tutlevel = new MenuEntry(tutlevelText);

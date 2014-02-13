@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Audio;
 
 using GameStateManagement;
 
@@ -55,8 +56,12 @@ namespace Squareosity
 
         ChoiceDisplay UI;
 
-        Shape Vivi;
 
+        SoundEffect WelcomeSFX, BlueSFX, PinkSFX, QuestionsSFX;
+
+        SoundEffectInstance WelcomeSFXInstance;
+   
+        
         Song Welcome, Blue, Pink, iniProgress, progressLoadedSFX, 
             Questions, One, Two, Three, Opo, System, entryPoint;
 
@@ -74,15 +79,20 @@ namespace Squareosity
         bool PinkTestStarted = false;
         bool PinkTestCompleted = false;
 
+        bool questionsSpoken = false;
+
         bool countDownStated = false;
 
         bool pressedOk = false;
         bool progressLoaded = false;
+
+        bool questionOneAsked = false;
+        bool questionTwoAsked = false;
         int choice = 0;
 
-        // 
+        
 
-        SongCollection songs;
+        
         
 
         #endregion
@@ -91,7 +101,7 @@ namespace Squareosity
 
 
         /// <summary>
-        /// Constructor.
+        /// Media player is lagging as hell. Use soundFX instead.
         /// </summary>
 
         public TutLevel1()
@@ -131,6 +141,13 @@ namespace Squareosity
                  * 
                  */
 
+                WelcomeSFX = content.Load<SoundEffect>("Audio/SoundFX/Vivi_Tut/Vivi_Welcome_UK_WAV");
+                BlueSFX = content.Load<SoundEffect>("Audio/SoundFX/Vivi_Tut/Vivi_BlueSquare_UK_WAV");
+                PinkSFX = content.Load<SoundEffect>("Audio/SoundFX/Vivi_Tut/Vivi_PinkSquare_UK_WAV");
+                QuestionsSFX = content.Load<SoundEffect>("Audio/SoundFX/Vivi_Tut/Vivi_Questions_UK_WAV");
+
+                WelcomeSFXInstance = WelcomeSFX.CreateInstance();
+
                 Welcome = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_Welcome_UK");
                 Blue = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_BlueSquare_UK");
                 Pink = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_PinkSquare_UK");
@@ -145,7 +162,7 @@ namespace Squareosity
                 entryPoint = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_EntryPoint");
                 
 
-                Vivi = new Shape(content.Load<Texture2D>("pinkVivi"), new Vector2(200, 100), true, true, world);
+               
               
                 UI = new ChoiceDisplay(content.Load<Texture2D>("a-Button"), content.Load<Texture2D>("b-Button"),
                     content.Load<Texture2D>("x-Button"), null, "No, Let's go!.","Who am I?", "Where am I?!", null, content);
@@ -159,6 +176,7 @@ namespace Squareosity
                 playerBody = new PlayerBody(content.Load<Texture2D>("redPlayer"), world, content);
                 playerBody.getSetLaserStatus = false;
                 playerBody.getSetDrawScore = false;
+                playerBody.getSetChoicePoint = false;
                
                 int space = 0;
 
@@ -307,7 +325,7 @@ namespace Squareosity
                 {
                     Timer += gameTime.ElapsedGameTime.Milliseconds;
                 }
-                if (Timer > timerForGreenTest && GreenTestStarted == false)
+                if (Timer > timerForGreenTest && GreenTestStarted == false && MediaPlayer.State == MediaState.Stopped)
                 {
 
                     Timer = 0;
@@ -316,7 +334,8 @@ namespace Squareosity
 
                     UI.setSub = "Welcome my name is Vivi. Move to and touch the red square to continue.";
                     Squares.Add(new Square(content.Load<Texture2D>("Squares/redSquare"), new Vector2(800, 100),true, world));
-                    MediaPlayer.Play(Welcome);
+              //      MediaPlayer.Play(Welcome);
+                    WelcomeSFXInstance.Play();
                 }
 
                 if (GreenTestStarted == true && GreenTestComplete == false)
@@ -326,7 +345,13 @@ namespace Squareosity
                         GreenTestComplete = true;
                         BlueTestStarted = true;
                         UI.setSub = "Wonderful, now fire your laser at the blue square.";
-                        MediaPlayer.Play(Blue);
+                      //  MediaPlayer.Play(Blue);
+                        if (WelcomeSFXInstance.State == SoundState.Stopped)
+                        {
+                            WelcomeSFXInstance.Stop();
+                            BlueSFX.Play();
+                        }
+                       
                         Squares.Add(new Square(content.Load<Texture2D>("Squares/blueSquare"), new Vector2(100, 500),true, world));
                         playerBody.getSetLaserStatus = true;
                         world.RemoveBody(Squares[0].squareBody); 
@@ -346,7 +371,9 @@ namespace Squareosity
                         Squares.RemoveAt(0);
 
                         UI.setSub = "Excellent, now pick up and move the pink square into the pink area.";
-                        MediaPlayer.Play(Pink);
+                    //    MediaPlayer.Play(Pink);
+                       
+                        PinkSFX.Play();
                         pickuables.Add(new Pickupable(content.Load<Texture2D>("Squares/pinkSquare"), new Vector2(10, 50), world));
                         Areas.Add(new Area(content.Load<Texture2D>("pinkArea"), new Vector2(800, 500), 1.57f, world));
 
@@ -374,11 +401,16 @@ namespace Squareosity
 
                 }
 
-                if ( PinkTestCompleted && UI.Acitve == false && countDownStated == false)
+                // need to add bool for sound fx here. 
+                if ( PinkTestCompleted && UI.Acitve == false && countDownStated == false  )
                 {
-                    // some perfomance issues when this loads.
-                    UI.setSub = "You are confirmed operational. Remember only blue, red and pink neon is safe to touch. Questions?";
-                    MediaPlayer.Play(Questions);
+
+                    if (questionsSpoken == false)
+                    {
+                        UI.setSub = "You are confirmed operational. Remember only blue, red and pink neon is safe to touch. Questions?";
+                        QuestionsSFX.Play();
+                        questionsSpoken = true;
+                    }
                     Timer += gameTime.ElapsedGameTime.Milliseconds;
                     if (Timer > 1500)
                     {
@@ -393,25 +425,31 @@ namespace Squareosity
                 {
 
                    
-                        if (playerBody.choiceValue == 2)
+                        if (playerBody.choiceValue == 2  && MediaPlayer.State == MediaState.Stopped && questionOneAsked == false)
+                    
                         {
                             UI.setSub = "You are designated as an Operational Perpetuating Organism. Or Opo.";
                             UI.setTextA = "Ok, let's go!";
+                            MediaPlayer.Play(Opo);
+                            questionOneAsked = true;
 
 
                         }
-                        else if (playerBody.choiceValue == 3)
+                        else if (playerBody.choiceValue == 3 && MediaPlayer.State == MediaState.Stopped && questionTwoAsked == false)
                         {
                             UI.setSub = "You are in the System.";
                             UI.setTextA = "Ok, let's go!";
+                            MediaPlayer.Play(System);
+                            questionTwoAsked = true;
 
                         }
-                        else if (playerBody.choiceValue == 1)
+                        else if (playerBody.choiceValue == 1 && MediaPlayer.State == MediaState.Stopped)
                         {
                             pressedOk = true;
                             UI.Acitve = false;
                             UI.setSub = "Loading progress tracker.";
                             Timer = 0;
+                            MediaPlayer.Play(iniProgress);
                             
                             
                         }
@@ -421,25 +459,28 @@ namespace Squareosity
                 if (pressedOk && progressLoaded == false)
                 {
                     Timer += gameTime.ElapsedGameTime.Milliseconds;
-                    if (Timer > 1000 && Timer < 2000)
+                    if (Timer > 2000 && Timer < 3000 && MediaPlayer.State == MediaState.Stopped)
                     {
                         UI.setSub = "Three...";
+                        MediaPlayer.Play(Three);
 
                     }
-                    if (Timer > 2000 && Timer < 3000)
+                    if (Timer > 3000 && Timer < 4000 && MediaPlayer.State == MediaState.Stopped)
                     {
                         UI.setSub = "Two...";
+                        MediaPlayer.Play(Two);
 
                     }
-                    if (Timer > 3000 && Timer < 4000)
+                    if (Timer > 4000 && Timer < 5000 && MediaPlayer.State == MediaState.Stopped)
                     {
                         UI.setSub = "One...";
+                        MediaPlayer.Play(One);
 
                     }
-                    if (Timer > 4000 && Timer < 4500)
+                    if (Timer > 5000 && Timer < 6500 && MediaPlayer.State == MediaState.Stopped)
                     {
                         UI.setSub = "Progress module loaded.";
-                       
+                        MediaPlayer.Play(progressLoadedSFX);
                         playerBody.getSetDrawScore = true;
                         progressLoaded = true;
                         Timer = 0;
@@ -450,30 +491,37 @@ namespace Squareosity
                 if (progressLoaded )
                 {
                     Timer += gameTime.ElapsedGameTime.Milliseconds;
-                    if (Timer > 1000 && Timer < 2000)
+                    if (Timer > 2000 && Timer < 3500 && MediaPlayer.State == MediaState.Stopped)
                     {
-                        UI.setSub = "Loading courpution "; 
+                        UI.setSub = "Loading courpution entry point.";
+                        MediaPlayer.Play(entryPoint);
+                        
 
                     }
-                    if (Timer > 2000 && Timer < 3000)
+                    if (Timer > 3500 && Timer < 5500 && MediaPlayer.State == MediaState.Stopped)
                     {
 
                         UI.setSub = "Three...";
+                        MediaPlayer.Play(Three);
                     }
-                    if (Timer > 3000 && Timer < 4000)
+                    if (Timer > 5500 && Timer < 6500 && MediaPlayer.State == MediaState.Stopped)
                     {
                         UI.setSub = "Two...";
+                        MediaPlayer.Play(Two);
 
                     }
-                    if (Timer > 4000 && Timer < 5000)
+                    if (Timer > 6500 && Timer < 7000 && MediaPlayer.State == MediaState.Stopped)
                     {
                         UI.setSub = "One...";
+                        MediaPlayer.Play(One);
+                        
 
                     }
-                    if (Timer > 5000)
+                    if (Timer > 7500)
                     {
                         bloom.Visible = false;
-                        LoadingScreen.Load(ScreenManager, true, PlayerIndex.One, new GameplayScreen());
+                        ExitScreen();
+                        LoadingScreen.Load(ScreenManager, true, PlayerIndex.One, new ChapterOne());
                     }
                 }
                 
@@ -522,14 +570,21 @@ namespace Squareosity
             {
                 // bloom.Dispose();
                 bloom.Visible = false;
+                if (MediaPlayer.State == MediaState.Playing)
+                {
+                    MediaPlayer.Pause();
+                }
 
                 ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
 
             }
             else
             {
-              
-                playerBody.detectInput(keyboardState, mouse, cam2D.Position);
+                if (MediaPlayer.State == MediaState.Paused)
+                {
+                    MediaPlayer.Resume();
+                }
+                playerBody.detectInput(keyboardState, mouse, cam2D.Position, gameTime);
             }
         }
 
@@ -592,7 +647,7 @@ namespace Squareosity
             playerBody.draw(spriteBatch);
 
 
-            Vivi.Draw(spriteBatch);
+
 
             spriteBatch.End();
 

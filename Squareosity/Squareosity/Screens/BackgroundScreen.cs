@@ -28,6 +28,9 @@ namespace Squareosity
 
         ContentManager content;
         Texture2D backgroundTexture;
+        BloomComponent bloom;
+        public static int bloomSettingsIndex = 0;
+        
 
         #endregion
 
@@ -57,8 +60,12 @@ namespace Squareosity
             {
                 if (content == null)
                     content = new ContentManager(ScreenManager.Game.Services, "Content");
+                bloom = new BloomComponent(ScreenManager.Game);
+                ScreenManager.Game.Components.Add(bloom);
+                bloom.Settings = BloomSettings.PresetSettings[bloomSettingsIndex];
 
-                backgroundTexture = content.Load<Texture2D>("background");
+
+                backgroundTexture = content.Load<Texture2D>("Logo");
             }
         }
 
@@ -88,6 +95,11 @@ namespace Squareosity
                                                        bool coveredByOtherScreen)
         {
             base.Update(gameTime, otherScreenHasFocus, false);
+            if (coveredByOtherScreen)
+            {
+                bloom.Visible = false;
+            }
+            
         }
 
 
@@ -99,10 +111,15 @@ namespace Squareosity
             SpriteBatch spriteBatch = ScreenManager.SpriteBatch;
             Viewport viewport = ScreenManager.GraphicsDevice.Viewport;
             Rectangle fullscreen = new Rectangle(0, 0, viewport.Width, viewport.Height);
-
+            bloom.Visible = true;
+            bloom.BeginDraw();
             spriteBatch.Begin();
 
-            spriteBatch.Draw(backgroundTexture, fullscreen,
+
+            ScreenManager.GraphicsDevice.Clear(ClearOptions.Target,
+                                               Color.Black, 0, 0);
+
+            spriteBatch.Draw(backgroundTexture, new Vector2(512 - (backgroundTexture.Width / 2),10),
                              new Color(TransitionAlpha, TransitionAlpha, TransitionAlpha));
 
             spriteBatch.End();

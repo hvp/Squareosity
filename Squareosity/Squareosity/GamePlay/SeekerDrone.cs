@@ -100,11 +100,7 @@ namespace Squareosity
             deltaX = target.X - droneBody.Position.X * 64; // target is in display units
             deltaY = target.Y - droneBody.Position.Y * 64;
             rads = Math.Atan(deltaY / deltaX);
-            /*
-            Console.WriteLine("Delta X: " + deltaX);
-            Console.WriteLine("Delta Y: " + deltaY);
-            Console.WriteLine("ANGLE:" + rads * (180 / Math.PI));
-            */
+          
             direction = getVectorFromRads(rads);
 
          //   if (keyState.IsKeyDown(Keys.F))

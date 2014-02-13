@@ -55,7 +55,7 @@ namespace Squareosity
            if (rads <= 1.57079633f) // 90C:\Users\User\Documents\Games\Squareosity\Squareosity\Squareosity\GamePlay\Laser.cs
              {
                 laserBody.LinearVelocity = new Vector2(5, 0);
-                Console.WriteLine("LASER LV : " + laserBody.LinearVelocity.ToString());
+               
             }
          
               else if (rads <= 3.14159265f) // 180

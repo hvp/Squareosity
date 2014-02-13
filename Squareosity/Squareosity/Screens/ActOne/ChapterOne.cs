@@ -20,7 +20,7 @@ using FarseerPhysics.Dynamics.Joints;
 
 namespace Squareosity
 {
-    class level3Screen : GameScreen
+    class ChapterOne: GameScreen
     {
 
         #region Fields
@@ -40,8 +40,7 @@ namespace Squareosity
         List<Bady> Badies = new List<Bady>();
         List<Square> Squares = new List<Square>();
         List<SeekerDrone> Drones = new List<SeekerDrone>();
-
-        Shape spinningWheel;
+        List<Collectable> Collectables = new List<Collectable>();
 
         Texture2D reticle;
         InputAction pauseAction;
@@ -55,7 +54,7 @@ namespace Squareosity
         /// Constructor.
         /// </summary>
 
-        public level3Screen()
+        public ChapterOne()
         {
             TransitionOnTime = TimeSpan.FromSeconds(1.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
@@ -88,52 +87,13 @@ namespace Squareosity
                 ScreenManager.Game.Components.Add(bloom);
 
 
-
-
                 cam2D = new Cam2d(ScreenManager.GraphicsDevice);
                 reticle = content.Load<Texture2D>("redReticle");
                 /// player 
                 playerBody = new PlayerBody(content.Load<Texture2D>("redPlayer"), world, content);
-                playerBody.setPostion = new Vector2(900, 100);
 
-
-                Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(-28, 200 ), world));
-                //spinning wheel.
-                {
-                    Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(-5, 250), false, world));
-
-                    Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(-5, 350), false, world));
-
-                    // filler
-                    Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(205, 360), false, world));
-
-                    Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(205, 250), false, world));
-                    // filler
-                    Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(205, 240), false, world));
-
-                    Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(205, 350), false, world));
-
-                    Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(160, 190), true, world));
-
-                    Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(160, 410), true, world));
-                   
-                    spinningWheel = new Shape(content.Load<Texture2D>("Shapes/orangeSpinningWheel"), new Vector2(100, 300), true,false, world);
-
-                    FixedRevoluteJoint fixedJoint = new FixedRevoluteJoint(spinningWheel.shapeBody, Vector2.Zero, spinningWheel.shapeBody.Position);
-                    world.AddJoint(fixedJoint);
-                }
-
-             
+               
                 int space = 0;
-
-                int k = 260;
-                for (; k < 1000; k += 100)
-                {
-                    Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(k, 190), true, world));
-                }
-
-                Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(k - 65, 190), true, world));
-
 
                 for (int i = 0; i < 11; i++)
                 {
@@ -152,8 +112,6 @@ namespace Squareosity
 
                 Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(1050, 45), false, world));
                 Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(1050, 555), false, world));
-
-               
 
                 // set cam track 
 
@@ -222,27 +180,13 @@ namespace Squareosity
                 // bloom
                 bloom.Visible = true;
                 bloom.Settings = BloomSettings.PresetSettings[bloomSettingsIndex];
-
-                foreach (Square square in Squares)
-                {
-                    square.Update();
-                    if (square.isTouching)
-                    {
-                        playerBody.isAlive = false;
-                    }
-                }
-
                 
-
                 // update entites
                 playerBody.update(gameTime);
+                
 
-                spinningWheel.shapeBody.IsStatic = false;
-                if (spinningWheel.shapeBody.AngularVelocity < 0.5)
-                {
-                    spinningWheel.shapeBody.ApplyTorque(0.1f);
-                }
-                    if (playerBody.isAlive == false)
+              
+                if (playerBody.isAlive == false)
                 {
                     bloom.Visible = false;
                   
@@ -251,12 +195,12 @@ namespace Squareosity
                     
                     this.ExitScreen();
 
-                    LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new DeadScreen(3));
+                    LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new DeadScreen(2));
 
                 }
                 
                 //game script 
-                  
+
 
                
 
@@ -309,7 +253,7 @@ namespace Squareosity
             }
             else
             {
-                playerBody.detectInput(keyboardState, mouse, cam2D.Position);
+                playerBody.detectInput(keyboardState, mouse, cam2D.Position, gameTime);
             }
         }
 
@@ -352,7 +296,6 @@ namespace Squareosity
 
             }
 
-            spriteBatch.Draw(spinningWheel.getTex, spinningWheel.shapeBody.Position * 64, null, Color.White, spinningWheel.shapeBody.Rotation, new Vector2(100, 100), 1f, SpriteEffects.None, 1f);
             if (!GamePad.GetState(PlayerIndex.One).IsConnected)
             {
               

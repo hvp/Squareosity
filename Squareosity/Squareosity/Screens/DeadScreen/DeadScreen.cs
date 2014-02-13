@@ -20,6 +20,7 @@ namespace Squareosity
 
         float pauseAlpha;
 
+        ChoiceDisplay UI;
         InputAction pauseAction;
         BloomComponent bloom;
         public static int bloomSettingsIndex = 0;
@@ -54,10 +55,11 @@ namespace Squareosity
                 bloom = new BloomComponent(ScreenManager.Game);
                 ScreenManager.Game.Components.Add(bloom);
                 tex = content.Load<Texture2D>("DeadScreen/redDeathScreen");
+                
 
-
-
-
+                UI = new ChoiceDisplay(null, null, null, null, null, null, null, null, content);
+                UI.setSub = "Press A to respawn.";
+                
                 ScreenManager.Game.ResetElapsedTime();
         
             }
@@ -174,7 +176,7 @@ namespace Squareosity
 
             
                 batch.Draw(tex,new Vector2(512,384),null,Color.White,0f,new Vector2(tex.Width / 2, tex.Height / 2),1f,SpriteEffects.None,1f);
-
+                UI.Draw(batch);
 
             batch.End();
             

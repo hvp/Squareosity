@@ -122,6 +122,7 @@
   <ItemGroup>
     <Compile Include="GamePlay\Area.cs" />
     <Compile Include="GamePlay\ChainLink.cs" />
+    <Compile Include="GamePlay\GameData.cs" />
     <Compile Include="GamePlay\HealthGem.cs" />
     <Compile Include="GamePlay\Pickupable.cs" />
     <Compile Include="GamePlay\playerLaser.cs" />
@@ -143,11 +144,14 @@
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="ScreenFactory.cs" />
+    <Compile Include="Screens\ActOne\ChapterOne.cs" />
     <Compile Include="Screens\BackgroundScreen.cs" />
+    <Compile Include="Screens\ActOneScreen.cs" />
+    <Compile Include="Screens\ActSelectionScreen.cs" />
     <Compile Include="Screens\DeadScreen\DeadScreen.cs" />
-    <Compile Include="Screens\Level1\GameplayScreen.cs" />
-    <Compile Include="Screens\Level2\level2Screen.cs" />
-    <Compile Include="Screens\Level3\level3Screen.cs" />
+    <Compile Include="Screens\LevelAlpha\GameplayScreen.cs" />
+    <Compile Include="Screens\LevelBeta\level2Screen.cs" />
+    <Compile Include="Screens\LevelGamma\level3Screen.cs" />
     <Compile Include="Screens\LevelEditor\LevelEditor.cs" />
     <Compile Include="Screens\LoadingScreen.cs" />
     <Compile Include="Screens\MainMenuScreen.cs" />

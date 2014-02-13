@@ -253,7 +253,7 @@ namespace Squareosity
             }
             else
             {
-                playerBody.detectInput(keyboardState, mouse, cam2D.Position);
+                playerBody.detectInput(keyboardState, mouse, cam2D.Position, gameTime);
             }
         }
 

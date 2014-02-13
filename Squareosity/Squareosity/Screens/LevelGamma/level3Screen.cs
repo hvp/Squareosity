@@ -20,7 +20,7 @@ using FarseerPhysics.Dynamics.Joints;
 
 namespace Squareosity
 {
-    class level2Screen : GameScreen
+    class level3Screen : GameScreen
     {
 
         #region Fields
@@ -40,9 +40,8 @@ namespace Squareosity
         List<Bady> Badies = new List<Bady>();
         List<Square> Squares = new List<Square>();
         List<SeekerDrone> Drones = new List<SeekerDrone>();
-        List<Collectable> Collectables = new List<Collectable>();
 
-
+        Shape spinningWheel;
 
         Texture2D reticle;
         InputAction pauseAction;
@@ -56,7 +55,7 @@ namespace Squareosity
         /// Constructor.
         /// </summary>
 
-        public level2Screen()
+        public level3Screen()
         {
             TransitionOnTime = TimeSpan.FromSeconds(1.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
@@ -89,39 +88,54 @@ namespace Squareosity
                 ScreenManager.Game.Components.Add(bloom);
 
 
+
+
                 cam2D = new Cam2d(ScreenManager.GraphicsDevice);
                 reticle = content.Load<Texture2D>("redReticle");
                 /// player 
                 playerBody = new PlayerBody(content.Load<Texture2D>("redPlayer"), world, content);
+                playerBody.setPostion = new Vector2(900, 100);
 
-                // drones - can only have two without performance issues 
+
+                Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(-28, 200 ), world));
+                //spinning wheel.
                 {
+                    Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(-5, 250), false, world));
 
-                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(100, 500), world, content, 10));
-                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(200, 150), world, content, 9));
-                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(300, 200), world, content, 12));
-                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(400, 250), world, content, 14));
-                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(500, 300), world, content, 20));
-                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(600, 350), world, content, 25));
+                    Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(-5, 350), false, world));
 
-                    Drones[0].Stationary = true;
-                    Drones[5].Stationary = true;
+                    // filler
+                    Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(205, 360), false, world));
 
+                    Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(205, 250), false, world));
+                    // filler
+                    Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(205, 240), false, world));
 
+                    Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(205, 350), false, world));
+
+                    Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(160, 190), true, world));
+
+                    Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(160, 410), true, world));
+                   
+                    spinningWheel = new Shape(content.Load<Texture2D>("Shapes/orangeSpinningWheel"), new Vector2(100, 300), true,false, world);
+
+                    FixedRevoluteJoint fixedJoint = new FixedRevoluteJoint(spinningWheel.shapeBody, Vector2.Zero, spinningWheel.shapeBody.Position);
+                    world.AddJoint(fixedJoint);
                 }
 
-                {
-
-                         Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(0, 50), world));
-                         Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(400, 50), world));
-                         Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(240, 350), world));
-                         Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(300, 400), world));
-                         Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(300, 550), world));
-                }
-               
+             
                 int space = 0;
-                int i = 0;
-                for (; i < 11; i++)
+
+                int k = 260;
+                for (; k < 1000; k += 100)
+                {
+                    Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(k, 190), true, world));
+                }
+
+                Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(k - 65, 190), true, world));
+
+
+                for (int i = 0; i < 11; i++)
                 {
                     Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(space - 5, 0), true, world));
                     Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(space - 5, 600), true, world));
@@ -136,8 +150,10 @@ namespace Squareosity
                     space += 100;
                 }
 
-                Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(1050, 45 ), false, world));
+                Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(1050, 45), false, world));
                 Walls.Add(new Wall(content.Load<Texture2D>("Walls/blueWallMedium"), new Vector2(1050, 555), false, world));
+
+               
 
                 // set cam track 
 
@@ -206,52 +222,7 @@ namespace Squareosity
                 // bloom
                 bloom.Visible = true;
                 bloom.Settings = BloomSettings.PresetSettings[bloomSettingsIndex];
-                
-                // update entites
-                playerBody.update(gameTime);
 
-                foreach (Collectable star in Collectables)
-                {
-                    if (star.collected)
-                    {
-                        playerBody.updateScore(2);
-                        world.RemoveBody(star.collectableBody);
-                    }
-
-                }
-                for (int k = 0; k < Collectables.Count; ++ k)
-                {
-                    if (Collectables[k].collected)
-                    {
-                        Collectables.RemoveAt(k);
-
-                    }
-
-                }
-
-
-                foreach (SeekerDrone drone in Drones)
-                {
-                   drone.setTarget(playerBody.playerBody.Position * 64);
-                 
-                   
-                    drone.update(gameTime);
-
-                    if (drone.getIsDead)
-                    {
-                        world.RemoveBody(drone.getBody);
-                        
-                        playerBody.updateScore(2); /// updater this to a getter and setter!!!
-                    }
-                }
-
-                for (int k = 0; k < Drones.Count; ++k)
-                {
-                    if (Drones[k].getIsDead)
-                    {
-                        Drones.RemoveAt(k);
-                    }
-                }
                 foreach (Square square in Squares)
                 {
                     square.Update();
@@ -260,35 +231,33 @@ namespace Squareosity
                         playerBody.isAlive = false;
                     }
                 }
-                if (playerBody.isAlive == false)
+
+                
+
+                // update entites
+                playerBody.update(gameTime);
+
+                spinningWheel.shapeBody.IsStatic = false;
+                if (spinningWheel.shapeBody.AngularVelocity < 0.5)
+                {
+                    spinningWheel.shapeBody.ApplyTorque(0.1f);
+                }
+                    if (playerBody.isAlive == false)
                 {
                     bloom.Visible = false;
-                    
+                  
                     world.Clear();
                    
                     
                     this.ExitScreen();
-                    bloom.Visible = false;
-                    LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new DeadScreen(2));
+
+                    LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new DeadScreen(3));
 
                 }
                 
                 //game script 
+                  
 
-                if (playerBody.getScore() == 12 && Collectables.Count == 0)
-                {
-                    Collectables.Add(new Collectable(content.Load<Texture2D>("redStar"), new Vector2(400, 400),world));
-
-                 
-                
-                }
-                if (playerBody.getScore() == 14)
-                {
-                    ExitScreen();
-                    bloom.Visible = false;
-                        LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new level3Screen());
-                    
-                }
                
 
                 // limts on the cam. 
@@ -340,7 +309,7 @@ namespace Squareosity
             }
             else
             {
-                playerBody.detectInput(keyboardState, mouse, cam2D.Position);
+                playerBody.detectInput(keyboardState, mouse, cam2D.Position, gameTime);
             }
         }
 
@@ -368,12 +337,6 @@ namespace Squareosity
                 drone.draw(spriteBatch);
             }
 
-
-            foreach (Collectable star in Collectables)
-            {
-                star.draw(spriteBatch);
-
-            }
             foreach (Square square in Squares)
             {
                 square.Draw(spriteBatch);
@@ -389,9 +352,10 @@ namespace Squareosity
 
             }
 
-            if (!GamePad.GetState(PlayerIndex.One).IsConnected && IsActive == true)
+            spriteBatch.Draw(spinningWheel.getTex, spinningWheel.shapeBody.Position * 64, null, Color.White, spinningWheel.shapeBody.Rotation, new Vector2(100, 100), 1f, SpriteEffects.None, 0.8f);
+            if (!GamePad.GetState(PlayerIndex.One).IsConnected)
             {
-              
+                mouse = Mouse.GetState();
                 Vector2 mousePos = new Vector2(mouse.X, mouse.Y);
                 spriteBatch.Draw(reticle, mousePos + cam2D.Position - new Vector2(1024 / 2, 768 / 2), null, Color.White, 0f, new Vector2(10, 10), 1f, SpriteEffects.None, 1f);
         

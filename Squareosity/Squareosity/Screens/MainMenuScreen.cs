@@ -29,13 +29,15 @@ namespace Squareosity
         {
             // Create our menu entries.
             MenuEntry playGameMenuEntry = new MenuEntry("Play");
-            MenuEntry optionsMenuEntry = new MenuEntry("Level Select");
+            MenuEntry actMenuEntry = new MenuEntry("Select Act");
+            MenuEntry optionsMenuEntry = new MenuEntry("Test Levels");
             MenuEntry survivalModeMenuEntry = new MenuEntry("Survival Mode");
             MenuEntry levelEditEntry = new MenuEntry("Level Editor");
             MenuEntry exitMenuEntry = new MenuEntry("Exit");
 
             // Hook up menu event handlers.
             playGameMenuEntry.Selected += PlayGameMenuEntrySelected;
+            actMenuEntry.Selected += actMenuEntrySelected;
             optionsMenuEntry.Selected += OptionsMenuEntrySelected;
             levelEditEntry.Selected += levelEditEntrySelected;
             survivalModeMenuEntry.Selected += survivalModeEntrySelected; 
@@ -43,6 +45,7 @@ namespace Squareosity
 
             // Add entries to the menu.
             MenuEntries.Add(playGameMenuEntry);
+            MenuEntries.Add(actMenuEntry);
             MenuEntries.Add(optionsMenuEntry);
             MenuEntries.Add(survivalModeMenuEntry);
             MenuEntries.Add(levelEditEntry);
@@ -62,6 +65,12 @@ namespace Squareosity
         {
             LoadingScreen.Load(ScreenManager, true, e.PlayerIndex,
                                new GameplayScreen());
+        }
+
+       
+        void actMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        {
+            ScreenManager.AddScreen(new ActSelectionScreen(), PlayerIndex.One);
         }
 
 
