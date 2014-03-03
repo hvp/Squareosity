@@ -21,6 +21,8 @@ using FarseerPhysics.Common.Decomposition;
 
 namespace Squareosity
 {
+    // need to add a way of clearing the lasers from the world once the object has been reomvoed from the list.
+
     class Bady
     {
         Vector2 pos;

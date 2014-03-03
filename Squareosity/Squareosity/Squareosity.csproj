@@ -139,6 +139,7 @@
     <Compile Include="GamePlay\Shape.cs" />
     <Compile Include="GamePlay\Square.cs" />
     <Compile Include="GamePlay\Wall.cs" />
+    <Compile Include="GamePlay\WallBox.cs" />
     <Compile Include="GamePlay\Whip.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />

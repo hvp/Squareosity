@@ -45,10 +45,13 @@ namespace Squareosity
         bool isDead = false;
         bool isStationary = false;
         float fireRate = 250;
+        bool laserActive = true;
         float counter = 0;
 
         KeyboardState keyState;
-        // should fire lasers at player 
+       
+        // need to add a way of clearing the lasers from the world once the object has been reomvoed from the list.
+
         public SeekerDrone(Texture2D tex, Vector2 pos, World world, ContentManager content, float dampning) // might add two textures
         {
             this.content = content;
@@ -108,7 +111,7 @@ namespace Squareosity
 
             counter += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
-            if (counter > fireRate)
+            if (counter > fireRate && laserActive)
             {
                 if (target.X < droneBody.Position.X * 64)
                 {
@@ -200,6 +203,11 @@ namespace Squareosity
 
             return true;
         }
+        public bool LaserActive
+        {
+            set { laserActive = value; }
+            get { return laserActive; }
+        }
         public bool Stationary
         {
             set
@@ -220,6 +228,10 @@ namespace Squareosity
             get { return droneBody; }
 
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="target">Display units of the target.</param>
         public void setTarget(Vector2 target)
         {
             this.target = target;

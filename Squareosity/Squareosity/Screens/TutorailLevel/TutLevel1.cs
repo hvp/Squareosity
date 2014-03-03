@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +22,7 @@ using FarseerPhysics.Dynamics.Joints;
 
 namespace Squareosity
 {
-    class TutLevel1: GameScreen
+    class TutLevel1 : GameScreen
     {
 
         #region Fields
@@ -57,21 +57,23 @@ namespace Squareosity
         ChoiceDisplay UI;
 
 
-        SoundEffect WelcomeSFX, BlueSFX, PinkSFX, QuestionsSFX;
+        SoundEffect WelcomeSFX, BlueSFX, PinkSFX, QuestionsSFX, iniProgressSFX,progressLoadedSFX,
+            OneSFX,TwoSFX,ThreeSFX,OpoSFX,SystemSFX,EntryPointSFX;
 
-        SoundEffectInstance WelcomeSFXInstance;
+        SoundEffectInstance WelcomeSFXInstance, BlueSFXInstance, PinkSFXInstance, QuestionsSFXInstance,
+            iniProgressSFXInstance, progressLoadedSFXInstance, OneSFXInstance, TwoSFXInstance, ThreeSFXInstance,
+            OpoSFXInstance, SystemSFXInstance, EntryPointSFXInstance;
+
+
    
-        
-        Song Welcome, Blue, Pink, iniProgress, progressLoadedSFX, 
-            Questions, One, Two, Three, Opo, System, entryPoint;
 
         double Timer = 0;
 
         // variables for level progression 
         double timerForGreenTest = 750;
-        bool GreenTestStarted  = false;
+        bool GreenTestStarted = false;
         bool GreenTestComplete = false;
- 
+
 
         bool BlueTestStarted = false;
         bool BlueTestComplete = false;
@@ -88,12 +90,16 @@ namespace Squareosity
 
         bool questionOneAsked = false;
         bool questionTwoAsked = false;
+
+        bool sayOne = false;
+        bool sayTwo = false;
+        bool sayThree = false;
         int choice = 0;
 
-        
 
-        
-        
+
+
+
 
         #endregion
 
@@ -112,7 +118,7 @@ namespace Squareosity
 
             world = new World(new Vector2(0, 0));
 
-           
+
             // define and action 
             pauseAction = new InputAction(
                 new Buttons[] { Buttons.Start, Buttons.Back },
@@ -145,31 +151,40 @@ namespace Squareosity
                 BlueSFX = content.Load<SoundEffect>("Audio/SoundFX/Vivi_Tut/Vivi_BlueSquare_UK_WAV");
                 PinkSFX = content.Load<SoundEffect>("Audio/SoundFX/Vivi_Tut/Vivi_PinkSquare_UK_WAV");
                 QuestionsSFX = content.Load<SoundEffect>("Audio/SoundFX/Vivi_Tut/Vivi_Questions_UK_WAV");
+                progressLoadedSFX = content.Load<SoundEffect>("Audio/SoundFX/Vivi_Tut/Vivi_ProgessLoaded_WAV");
+                iniProgressSFX = content.Load<SoundEffect>("Audio/SoundFX/Vivi_Tut/Vivi_Progress_Tracker_WAV");
+
+                OneSFX = content.Load<SoundEffect>("Audio/SoundFX/Vivi_Tut/Vivi_One_WAV");
+                TwoSFX = content.Load<SoundEffect>("Audio/SoundFX/Vivi_Tut/Vivi_Two_WAV");
+                ThreeSFX = content.Load<SoundEffect>("Audio/SoundFX/Vivi_Tut/Vivi_Three_WAV");
+                OpoSFX = content.Load<SoundEffect>("Audio/SoundFX/Vivi_Tut/Vivi_You_are_opo_UK_WAV");
+                SystemSFX = content.Load<SoundEffect>("Audio/SoundFX/Vivi_Tut/Vivi_System_UK_WAV");
+                EntryPointSFX = content.Load<SoundEffect>("Audio/SoundFX/Vivi_Tut/Vivi_EntryPoint_WAV");
+
+
 
                 WelcomeSFXInstance = WelcomeSFX.CreateInstance();
+                BlueSFXInstance = BlueSFX.CreateInstance();
+                PinkSFXInstance = PinkSFX.CreateInstance();
+                QuestionsSFXInstance = QuestionsSFX.CreateInstance();
+                iniProgressSFXInstance = iniProgressSFX.CreateInstance();
+                progressLoadedSFXInstance = progressLoadedSFX.CreateInstance();
+                OneSFXInstance = OneSFX.CreateInstance();
+                TwoSFXInstance = TwoSFX.CreateInstance();
+                ThreeSFXInstance = ThreeSFX.CreateInstance();
+                OpoSFXInstance = OpoSFX.CreateInstance();
+                SystemSFXInstance = SystemSFX.CreateInstance();
+                EntryPointSFXInstance = EntryPointSFX.CreateInstance();
 
-                Welcome = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_Welcome_UK");
-                Blue = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_BlueSquare_UK");
-                Pink = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_PinkSquare_UK");
-                Questions = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_Questions_UK");
-                iniProgress = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_Progress_Tracker");
-                progressLoadedSFX = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_ProgessLoaded");
-                One = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_One");
-                Two = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_Two");
-                Three = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_Three");
-                Opo = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_You_are_opo_UK");
-                System = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_System_UK");
-                entryPoint = content.Load<Song>("Audio/SoundFX/Vivi_Tut/Vivi_EntryPoint");
-                
-
+            
                
-              
+                
                 UI = new ChoiceDisplay(content.Load<Texture2D>("a-Button"), content.Load<Texture2D>("b-Button"),
-                    content.Load<Texture2D>("x-Button"), null, "No, Let's go!.","Who am I?", "Where am I?!", null, content);
+                    content.Load<Texture2D>("x-Button"), null, "No, Let's go!.", "Who am I?", "Where am I?!", null, content);
                 UI.Acitve = false;
 
 
-              
+
                 cam2D = new Cam2d(ScreenManager.GraphicsDevice);
                 reticle = content.Load<Texture2D>("redReticle");
                 /// player 
@@ -177,7 +192,7 @@ namespace Squareosity
                 playerBody.getSetLaserStatus = false;
                 playerBody.getSetDrawScore = false;
                 playerBody.getSetChoicePoint = false;
-               
+
                 int space = 0;
 
                 for (int i = 0; i < 11; i++)
@@ -238,7 +253,7 @@ namespace Squareosity
 
 
 
-#region Update and Draw
+        #region Update and Draw
 
 
         /// <summary>
@@ -260,56 +275,56 @@ namespace Squareosity
             if (IsActive)
             {
 
-          
+
                 mouse = Mouse.GetState();
                 // bloom
                 bloom.Visible = true;
                 bloom.Settings = BloomSettings.PresetSettings[bloomSettingsIndex];
-                
+
                 // update entites
-              
-                    playerBody.update(gameTime);
 
-                    foreach (Pickupable pickupable in pickuables)
+                playerBody.update(gameTime);
+
+                foreach (Pickupable pickupable in pickuables)
+                {
+                    if (pickupable.getSetIsTouchingPlayer && playerBody.getSetWantsToPickUp && !playerBody.getSetHasPickedUp)
                     {
-                        if (pickupable.getSetIsTouchingPlayer && playerBody.getSetWantsToPickUp && !playerBody.getSetHasPickedUp)
-                        {
-                            // joints.Add ( JointFactory.CreateRevoluteJoint(world,playerBody.playerBody,
-                            //   pickupable.getBody, new Vector2(0,0)));
+                        // joints.Add ( JointFactory.CreateRevoluteJoint(world,playerBody.playerBody,
+                        //   pickupable.getBody, new Vector2(0,0)));
 
-                            Joints.Add(JointFactory.CreateDistanceJoint(world, playerBody.playerBody, pickupable.getBody, new Vector2(0, 0), new Vector2(0, 0)));
+                        Joints.Add(JointFactory.CreateDistanceJoint(world, playerBody.playerBody, pickupable.getBody, new Vector2(0, 0), new Vector2(0, 0)));
 
 
-                            playerBody.getSetWantsToPickUp = false;
-                            pickupable.getSetIsAttachedToPlayer = true;
+                        playerBody.getSetWantsToPickUp = false;
+                        pickupable.getSetIsAttachedToPlayer = true;
 
 
 
-                            playerBody.getSetHasPickedUp = true;
+                        playerBody.getSetHasPickedUp = true;
 
-                        }
-
-                        if (Joints.Count > 0 && playerBody.getSetWantsTodrop && playerBody.getSetHasPickedUp && pickupable.getSetIsAttachedToPlayer)
-                        {
-                            // for some reason the on seperation dosn't work when removing a joint. So we force the pickupable to not touching the player 
-                            world.RemoveJoint(Joints[0]);
-                            Joints.RemoveAt(0);
-                            playerBody.getSetHasPickedUp = false;
-                            pickupable.getSetIsAttachedToPlayer = false;
-                            pickupable.getSetIsTouchingPlayer = false;
-
-
-                        }
                     }
 
-              
+                    if (Joints.Count > 0 && playerBody.getSetWantsTodrop && playerBody.getSetHasPickedUp && pickupable.getSetIsAttachedToPlayer)
+                    {
+                        // for some reason the on seperation dosn't work when removing a joint. So we force the pickupable to not touching the player 
+                        world.RemoveJoint(Joints[0]);
+                        Joints.RemoveAt(0);
+                        playerBody.getSetHasPickedUp = false;
+                        pickupable.getSetIsAttachedToPlayer = false;
+                        pickupable.getSetIsTouchingPlayer = false;
+
+
+                    }
+                }
+
+
                 if (playerBody.isAlive == false)
                 {
                     bloom.Visible = false;
-                  
+
                     world.Clear();
-                   
-                    
+
+
                     this.ExitScreen();
 
                     LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new DeadScreen(0));
@@ -317,7 +332,7 @@ namespace Squareosity
                 }
 
 
-                
+
                 //game script 
 
 
@@ -330,11 +345,11 @@ namespace Squareosity
 
                     Timer = 0;
                     GreenTestStarted = true;
-                    
+
 
                     UI.setSub = "Welcome my name is Vivi. Move to and touch the red square to continue.";
-                    Squares.Add(new Square(content.Load<Texture2D>("Squares/redSquare"), new Vector2(800, 100),true, world));
-              //      MediaPlayer.Play(Welcome);
+                    Squares.Add(new Square(content.Load<Texture2D>("Squares/redSquare"), new Vector2(800, 100), true, world));
+                    //      MediaPlayer.Play(Welcome);
                     WelcomeSFXInstance.Play();
                 }
 
@@ -345,40 +360,40 @@ namespace Squareosity
                         GreenTestComplete = true;
                         BlueTestStarted = true;
                         UI.setSub = "Wonderful, now fire your laser at the blue square.";
-                      //  MediaPlayer.Play(Blue);
+                        //  MediaPlayer.Play(Blue);
                         if (WelcomeSFXInstance.State == SoundState.Stopped)
                         {
                             WelcomeSFXInstance.Stop();
                             BlueSFX.Play();
                         }
-                       
-                        Squares.Add(new Square(content.Load<Texture2D>("Squares/blueSquare"), new Vector2(100, 500),true, world));
+
+                        Squares.Add(new Square(content.Load<Texture2D>("Squares/blueSquare"), new Vector2(100, 500), true, world));
                         playerBody.getSetLaserStatus = true;
-                        world.RemoveBody(Squares[0].squareBody); 
+                        world.RemoveBody(Squares[0].squareBody);
                         Squares.RemoveAt(0);
                     }
 
-                   
+
                 }
 
-        
+
                 if (BlueTestStarted && BlueTestComplete == false)
                 {
                     if (Squares[0].isTouchingLaser)
                     {
                         BlueTestComplete = true;
-                        world.RemoveBody(Squares[0].squareBody); 
+                        world.RemoveBody(Squares[0].squareBody);
                         Squares.RemoveAt(0);
 
                         UI.setSub = "Excellent, now pick up and move the pink square into the pink area.";
-                    //    MediaPlayer.Play(Pink);
-                       
+                        //    MediaPlayer.Play(Pink);
+
                         PinkSFX.Play();
                         pickuables.Add(new Pickupable(content.Load<Texture2D>("Squares/pinkSquare"), new Vector2(10, 50), world));
                         Areas.Add(new Area(content.Load<Texture2D>("pinkArea"), new Vector2(800, 500), 1.57f, world));
 
                         Timer = 0;
-                       
+
                     }
 
                 }
@@ -402,7 +417,7 @@ namespace Squareosity
                 }
 
                 // need to add bool for sound fx here. 
-                if ( PinkTestCompleted && UI.Acitve == false && countDownStated == false  )
+                if (PinkTestCompleted && UI.Acitve == false && countDownStated == false)
                 {
 
                     if (questionsSpoken == false)
@@ -412,7 +427,7 @@ namespace Squareosity
                         questionsSpoken = true;
                     }
                     Timer += gameTime.ElapsedGameTime.Milliseconds;
-                    if (Timer > 1500)
+                    if (Timer > 2500)
                     {
                         UI.Acitve = true;
                         playerBody.getSetChoicePoint = true;
@@ -424,63 +439,66 @@ namespace Squareosity
                 if (BlueTestComplete && GreenTestComplete && PinkTestCompleted && pressedOk == false)
                 {
 
-                   
-                        if (playerBody.choiceValue == 2  && MediaPlayer.State == MediaState.Stopped && questionOneAsked == false)
-                    
-                        {
-                            UI.setSub = "You are designated as an Operational Perpetuating Organism. Or Opo.";
-                            UI.setTextA = "Ok, let's go!";
-                            MediaPlayer.Play(Opo);
-                            questionOneAsked = true;
 
+                    if (playerBody.choiceValue == 2 && questionOneAsked == false)
+                    {
+                        UI.setSub = "You are designated as an Operational Perpetuating Organism. Or Opo.";
+                        UI.setTextA = "Ok, let's go!";
+                        OpoSFXInstance.Play();
+                        questionOneAsked = true;
 
-                        }
-                        else if (playerBody.choiceValue == 3 && MediaPlayer.State == MediaState.Stopped && questionTwoAsked == false)
-                        {
-                            UI.setSub = "You are in the System.";
-                            UI.setTextA = "Ok, let's go!";
-                            MediaPlayer.Play(System);
-                            questionTwoAsked = true;
-
-                        }
-                        else if (playerBody.choiceValue == 1 && MediaPlayer.State == MediaState.Stopped)
-                        {
-                            pressedOk = true;
-                            UI.Acitve = false;
-                            UI.setSub = "Loading progress tracker.";
-                            Timer = 0;
-                            MediaPlayer.Play(iniProgress);
-                            
-                            
-                        }
 
                     }
+                    else if (playerBody.choiceValue == 3 && questionTwoAsked == false)
+                    {
+                        UI.setSub = "You are in the System.";
+                        UI.setTextA = "Ok, let's go!";
+                        SystemSFXInstance.Play();
+                        questionTwoAsked = true;
+
+                    }
+                    else if (playerBody.choiceValue == 1 )
+                    {
+                        pressedOk = true;
+                        UI.Acitve = false;
+                        UI.setSub = "Loading progress tracker.";
+                        Timer = 0;
+                        iniProgressSFXInstance.Play();
+
+
+                    }
+
+                }
 
                 if (pressedOk && progressLoaded == false)
                 {
                     Timer += gameTime.ElapsedGameTime.Milliseconds;
-                    if (Timer > 2000 && Timer < 3000 && MediaPlayer.State == MediaState.Stopped)
+                    if (iniProgressSFXInstance.State != SoundState.Playing && sayThree == false)
                     {
                         UI.setSub = "Three...";
-                        MediaPlayer.Play(Three);
+                        ThreeSFXInstance.Play();
+                        sayThree = true;
 
                     }
-                    if (Timer > 3000 && Timer < 4000 && MediaPlayer.State == MediaState.Stopped)
+                    if (ThreeSFXInstance.State != SoundState.Playing && sayTwo == false)
                     {
                         UI.setSub = "Two...";
-                        MediaPlayer.Play(Two);
+                        TwoSFXInstance.Play();
+                        sayTwo = true;
 
                     }
-                    if (Timer > 4000 && Timer < 5000 && MediaPlayer.State == MediaState.Stopped)
+                    
+                    if (TwoSFXInstance.State != SoundState.Playing && sayOne == false)
                     {
                         UI.setSub = "One...";
-                        MediaPlayer.Play(One);
+                        OneSFXInstance.Play();
+                        sayOne = true;
 
                     }
-                    if (Timer > 5000 && Timer < 6500 && MediaPlayer.State == MediaState.Stopped)
+                    if (OneSFXInstance.State != SoundState.Playing)
                     {
                         UI.setSub = "Progress module loaded.";
-                        MediaPlayer.Play(progressLoadedSFX);
+                        progressLoadedSFXInstance.Play();
                         playerBody.getSetDrawScore = true;
                         progressLoaded = true;
                         Timer = 0;
@@ -488,43 +506,43 @@ namespace Squareosity
 
                 }
 
-                if (progressLoaded )
+                if (progressLoaded)
                 {
                     Timer += gameTime.ElapsedGameTime.Milliseconds;
-                    if (Timer > 2000 && Timer < 3500 && MediaPlayer.State == MediaState.Stopped)
+                    if (Timer > 2000 && Timer < 4000 && EntryPointSFXInstance.State != SoundState.Playing)
                     {
                         UI.setSub = "Loading courpution entry point.";
-                        MediaPlayer.Play(entryPoint);
-                        
+                        EntryPointSFXInstance.Play();
+
 
                     }
-                    if (Timer > 3500 && Timer < 5500 && MediaPlayer.State == MediaState.Stopped)
+                    if (Timer > 4000 && Timer < 6000 && ThreeSFXInstance.State != SoundState.Playing)
                     {
 
                         UI.setSub = "Three...";
-                        MediaPlayer.Play(Three);
+                        ThreeSFXInstance.Play();
                     }
-                    if (Timer > 5500 && Timer < 6500 && MediaPlayer.State == MediaState.Stopped)
+                    if (Timer > 6000 && Timer < 8000 && TwoSFXInstance.State != SoundState.Playing)
                     {
                         UI.setSub = "Two...";
-                        MediaPlayer.Play(Two);
+                        TwoSFXInstance.Play();
 
                     }
-                    if (Timer > 6500 && Timer < 7000 && MediaPlayer.State == MediaState.Stopped)
+                    if (Timer > 8000 && Timer < 10000 && OneSFXInstance.State != SoundState.Playing)
                     {
                         UI.setSub = "One...";
-                        MediaPlayer.Play(One);
-                        
+                        OneSFXInstance.Play();
+
 
                     }
-                    if (Timer > 7500)
+                    if (Timer > 10000)
                     {
                         bloom.Visible = false;
                         ExitScreen();
                         LoadingScreen.Load(ScreenManager, true, PlayerIndex.One, new ChapterOne());
                     }
                 }
-                
+
 
                 // limts on the cam. 
 
@@ -637,13 +655,13 @@ namespace Squareosity
 
             if ((!GamePad.GetState(PlayerIndex.One).IsConnected) && playerBody.getSetLaserStatus)
             {
-              
+
                 Vector2 mousePos = new Vector2(mouse.X, mouse.Y);
                 spriteBatch.Draw(reticle, mousePos + cam2D.Position - new Vector2(1024 / 2, 768 / 2), null, Color.White, 0f, new Vector2(10, 10), 1f, SpriteEffects.None, 1f);
-        
+
             }
-           
-          
+
+
             playerBody.draw(spriteBatch);
 
 
@@ -666,7 +684,7 @@ namespace Squareosity
 
             }
         }
-#endregion
+        #endregion
 
     }
 }

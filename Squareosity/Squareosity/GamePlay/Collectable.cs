@@ -76,6 +76,13 @@ namespace Squareosity
                 
 
         }
+        /// <summary>
+        /// True if the item has been collected by the player.
+        /// </summary>
+        public bool Collected
+        {
+            get { return collected; }
+        }
 
     }
 }

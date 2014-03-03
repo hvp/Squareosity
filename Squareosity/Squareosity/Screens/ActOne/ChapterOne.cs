@@ -36,15 +36,20 @@ namespace Squareosity
         public static World world;
         float pauseAlpha;
 
+        List<Area> Areas = new List<Area>();
         List<Wall> Walls = new List<Wall>();
         List<Bady> Badies = new List<Bady>();
         List<Square> Squares = new List<Square>();
         List<SeekerDrone> Drones = new List<SeekerDrone>();
         List<Collectable> Collectables = new List<Collectable>();
+        List<DistanceJoint> Joints = new List<DistanceJoint>();
+        List<Pickupable> pickuables = new List<Pickupable>();
+        List<WallBox> WallBoxes = new List<WallBox>();
 
         Texture2D reticle;
         InputAction pauseAction;
 
+        bool hasMovedPickUp = false; 
         #endregion
 
         #region Initialization
@@ -86,13 +91,21 @@ namespace Squareosity
                 bloom = new BloomComponent(ScreenManager.Game);
                 ScreenManager.Game.Components.Add(bloom);
 
-
+                Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(100, 100), world, content, 10));
+                Drones[0].LaserActive = false;
+                  
+                WallBoxes.Add(new WallBox(1, 1, new Vector2(100, 100), world, content));
                 cam2D = new Cam2d(ScreenManager.GraphicsDevice);
                 reticle = content.Load<Texture2D>("redReticle");
                 /// player 
                 playerBody = new PlayerBody(content.Load<Texture2D>("redPlayer"), world, content);
 
-               
+
+                pickuables.Add(new Pickupable(content.Load<Texture2D>("Squares/pinkSquare"), new Vector2(10, 300), world));
+                Areas.Add(new Area(content.Load<Texture2D>("pinkArea"), new Vector2(900, 300), 0f, world));
+
+
+
                 int space = 0;
 
                 for (int i = 0; i < 11; i++)
@@ -184,7 +197,36 @@ namespace Squareosity
                 // update entites
                 playerBody.update(gameTime);
                 
+                Drones[0].setTarget(playerBody.playerBody.Position * 64);
 
+                foreach (SeekerDrone drone in Drones)
+                {
+                    drone.update(gameTime);
+                }
+                foreach (Pickupable pickupable in pickuables)
+                {
+                    if (pickupable.getSetIsTouchingPlayer && playerBody.getSetWantsToPickUp && !playerBody.getSetHasPickedUp)
+                    {
+                        
+                        Joints.Add(JointFactory.CreateDistanceJoint(world, playerBody.playerBody, pickupable.getBody, new Vector2(0, 0), new Vector2(0, 0)));
+                        playerBody.getSetWantsToPickUp = false;
+                        pickupable.getSetIsAttachedToPlayer = true;
+                        playerBody.getSetHasPickedUp = true;
+
+                    }
+
+                    if (Joints.Count > 0 && playerBody.getSetWantsTodrop && playerBody.getSetHasPickedUp && pickupable.getSetIsAttachedToPlayer)
+                    {
+                        // for some reason the on seperation dosn't work when removing a joint. So we force the pickupable to not touching the player 
+                        world.RemoveJoint(Joints[0]);
+                        Joints.RemoveAt(0);
+                        playerBody.getSetHasPickedUp = false;
+                        pickupable.getSetIsAttachedToPlayer = false;
+                        pickupable.getSetIsTouchingPlayer = false;
+
+
+                    }
+                }
               
                 if (playerBody.isAlive == false)
                 {
@@ -201,7 +243,36 @@ namespace Squareosity
                 
                 //game script 
 
+                if (hasMovedPickUp == false)
+                {
+                    if (Areas[0].getIsPickUpTouching && playerBody.getSetHasPickedUp == false)
+                    {
+                        hasMovedPickUp = true;
+                        Collectables.Add(new Collectable(content.Load<Texture2D>("redStar"), new Vector2(0, 300), world));
+                        Areas.RemoveAt(0);
+                        pickuables.RemoveAt(0);
+                        WallBoxes[0].removeWalls();
+                        WallBoxes.RemoveAt(0);
+                    }
+                }
 
+                for (int k = 0; k < Collectables.Count; ++k)
+                {
+                    if (Collectables[k].Collected)
+                    {
+                        Collectables.RemoveAt(k);
+                    }
+                }
+
+                    if (hasMovedPickUp)
+                    {
+                        if (Collectables.Count == 0)
+                        {
+                            bloom.Visible = false;
+                            ExitScreen();
+
+                        }
+                    }
                
 
                 // limts on the cam. 
@@ -280,6 +351,16 @@ namespace Squareosity
             {
                 drone.draw(spriteBatch);
             }
+            foreach(WallBox wallBox in WallBoxes)
+            {
+                wallBox.Draw(spriteBatch);
+            }
+                
+            foreach (Collectable colleactable in Collectables)
+            {
+                colleactable.draw(spriteBatch);
+
+            }
 
             foreach (Square square in Squares)
             {
@@ -295,6 +376,15 @@ namespace Squareosity
                 wall.Draw(spriteBatch);
 
             }
+            foreach (Pickupable pickupable in pickuables)
+            {
+                pickupable.Draw(spriteBatch);
+            }
+            foreach (Area area in Areas)
+            {
+                area.Draw(spriteBatch);
+            }
+            
 
             if (!GamePad.GetState(PlayerIndex.One).IsConnected)
             {

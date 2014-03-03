@@ -84,6 +84,10 @@ namespace Squareosity
 
         }
 
+        public Body WallBody
+        {
+            get { return wallBody; }
+        }
         public float getRot()
         {
             return wallBody.Rotation;
