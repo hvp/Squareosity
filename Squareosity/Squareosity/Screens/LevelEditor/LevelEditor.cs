@@ -170,7 +170,7 @@ namespace Squareosity
                 world.Step((float)gameTime.ElapsedGameTime.TotalMilliseconds * 0.001f);
             }
         }
-
+        bool isRotated = false;//TODO : rename this variable appropriately , or create input manager? to handle "key pressed once" event?
             /// <summary>
         /// Lets the game respond to player input. Unlike the Update method,
         /// this will only be called when the gameplay screen is active.
@@ -204,12 +204,23 @@ namespace Squareosity
             }
             else
             {
-                if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
+                Dictionary<Tuple<Keys, Keys>, Vector2> dirMoves = new Dictionary<Tuple<Keys, Keys>, Vector2>()
                 {
-                    cam2D.MoveCamera(new Vector2(-0.1f, 0));
+                    {new Tuple<Keys,Keys> (Keys.A ,Keys.Left), new Vector2(-.1f,0) },
+                    {new Tuple<Keys,Keys> (Keys.D ,Keys.Right),new Vector2(.1f,0) },
+                    {new Tuple<Keys,Keys> (Keys.W ,Keys.Up), new Vector2(0,-.1f) },
+                    {new Tuple<Keys,Keys> (Keys.S ,Keys.Down), new Vector2(0,.1f) }
+                };
+                foreach (var k in dirMoves)
+                {
+                    if (keyboardState.IsKeyDown(k.Key.Item1) || keyboardState.IsKeyDown(k.Key.Item2))
+                        cam2D.MoveCamera(k.Value);
                 }
-                if (keyboardState.IsKeyDown(Keys.R))
+
+
+                if (!isRotated && keyboardState.IsKeyDown(Keys.R))
                 {
+                    isRotated = true;
                     if (assetRotation == 1.57f)
                     {
                         assetRotation = 0;
@@ -218,6 +229,10 @@ namespace Squareosity
                     {
                         assetRotation = 1.57f;
                     }
+                }
+                else if (keyboardState.IsKeyUp(Keys.R))
+                {
+                    isRotated = false;
                 }
 
                 if (keyboardState.IsKeyDown(Keys.Y))
