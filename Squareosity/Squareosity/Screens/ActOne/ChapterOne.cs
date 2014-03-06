@@ -93,6 +93,7 @@ namespace Squareosity
 
                 Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(100, 100), world, content, 10));
                 Drones[0].LaserActive = false;
+               
                   
                 WallBoxes.Add(new WallBox(1, 1, new Vector2(100, 100), world, content));
                 cam2D = new Cam2d(ScreenManager.GraphicsDevice);
@@ -196,12 +197,18 @@ namespace Squareosity
                 
                 // update entites
                 playerBody.update(gameTime);
-                
-                Drones[0].setTarget(playerBody.playerBody.Position * 64);
 
-                foreach (SeekerDrone drone in Drones)
+                for (int k = 0; k < Drones.Count; ++k)
                 {
-                    drone.update(gameTime);
+                    Drones[k].setTarget(playerBody.playerBody.Position * 64);
+                }
+                for(int k = 0; k < Drones.Count; ++k)
+                {
+                    Drones[k].update(gameTime);
+                    if (Drones[k].getIsDead)
+                    {
+                        Drones.RemoveAt(k); // play an explosion animation or something cool like that. 
+                    }
                 }
                 foreach (Pickupable pickupable in pickuables)
                 {

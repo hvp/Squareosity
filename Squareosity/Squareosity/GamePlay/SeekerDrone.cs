@@ -228,6 +228,11 @@ namespace Squareosity
             get { return droneBody; }
 
         }
+        public int getSetHealth
+        {
+            get { return health; }
+            set { health = value; }
+        }
         /// <summary>
         /// 
         /// </summary>

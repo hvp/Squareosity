@@ -81,7 +81,16 @@ namespace Squareosity
 
         public void update(GameTime gameTime)
         {
+            if (hasPickedUp)
+            {
+                laserActive = false;
+            }
+            else
+            {
+                laserActive = true; // will need to re code this if I want to set laser active else where.
+            }
             if (health <= 0)
+
             {
                 isAlive = false;
             }
@@ -89,6 +98,7 @@ namespace Squareosity
             {
                 laser.Update(gameTime);
             }
+            
 
             for (int k = 0; k < playerLasers.Count(); k++)
             {
@@ -141,7 +151,7 @@ namespace Squareosity
                 {
 
                     timer += gameTime.ElapsedGameTime.Milliseconds;
-                    if (timer > fireRate)
+                    if (timer > fireRate && laserActive)
                     {
                         Vector2 velo = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right;
                         velo = new Vector2(velo.X, -velo.Y);
