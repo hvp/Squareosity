@@ -33,4 +33,4 @@ Build requirements
 
 Sample Video
 ============
-http://vimeo.com/85485799
+https://www.youtube.com/watch?v=45XSOUwqZrE
