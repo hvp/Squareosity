@@ -40,6 +40,7 @@ namespace Squareosity
         List<Bady> Badies = new List<Bady>();
         List<Square> Squares = new List<Square>();
         List<SeekerDrone> Drones = new List<SeekerDrone>();
+        List<Collectable> Collectables = new List<Collectable>();
 
         Shape spinningWheel;
 
@@ -96,6 +97,14 @@ namespace Squareosity
                 playerBody = new PlayerBody(content.Load<Texture2D>("redPlayer"), world, content);
                 playerBody.setPostion = new Vector2(900, 100);
 
+
+                // stars (collectabiles)
+
+                Collectables.Add(new Collectable(content.Load<Texture2D>("redStar"), new Vector2(30, 340),world));
+
+
+
+                // mines
 
                 Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"), new Vector2(-28, 200 ), world));
                 //spinning wheel.
@@ -254,6 +263,25 @@ namespace Squareosity
                     LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new DeadScreen(3));
 
                 }
+
+                    foreach (Collectable star in Collectables)
+                    {
+                        if (star.collected)
+                        {
+                            playerBody.updateScore(2);
+                            world.RemoveBody(star.collectableBody);
+                        }
+
+                    }
+                    for (int k = 0; k < Collectables.Count; ++k)
+                    {
+                        if (Collectables[k].collected)
+                        {
+                            Collectables.RemoveAt(k);
+
+                        }
+
+                    }
                 
                 //game script 
                   
@@ -332,6 +360,11 @@ namespace Squareosity
                             null,
                             null,
                             cam2D.View);
+
+            foreach (Collectable star in Collectables)
+            {
+                star.draw(spriteBatch);
+            }
             foreach (SeekerDrone drone in Drones)
             {
                 drone.draw(spriteBatch);

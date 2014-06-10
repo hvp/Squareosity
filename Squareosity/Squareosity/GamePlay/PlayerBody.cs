@@ -52,6 +52,8 @@ namespace Squareosity
          bool hasPickedUp = false;
          bool wantsToDrop = false;
 
+         bool enterWithKeyboard = false;
+
          int choice = 99;
          List<playerLaser> playerLasers = new List<playerLaser>();
          ContentManager content;

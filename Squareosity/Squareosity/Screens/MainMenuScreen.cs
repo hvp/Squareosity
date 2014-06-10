@@ -45,10 +45,10 @@ namespace Squareosity
 
             // Add entries to the menu.
             MenuEntries.Add(playGameMenuEntry);
-            MenuEntries.Add(actMenuEntry);
+          //  MenuEntries.Add(actMenuEntry);
             MenuEntries.Add(optionsMenuEntry);
-            MenuEntries.Add(survivalModeMenuEntry);
-            MenuEntries.Add(levelEditEntry);
+       //     MenuEntries.Add(survivalModeMenuEntry);
+        //    MenuEntries.Add(levelEditEntry);
             MenuEntries.Add(exitMenuEntry);
         }
 

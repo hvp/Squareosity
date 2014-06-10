@@ -241,7 +241,7 @@ namespace Squareosity
                     {
                         world.RemoveBody(drone.getBody);
                         
-                        playerBody.updateScore(2); /// updater this to a getter and setter!!!
+                        playerBody.updateScore(2); /// update this to a getter and setter!!!
                     }
                 }
 
