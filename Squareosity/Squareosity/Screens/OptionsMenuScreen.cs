@@ -26,12 +26,14 @@ namespace Squareosity
         MenuEntry level1;
         MenuEntry level2;
         MenuEntry level3;
+        MenuEntry level4;
         MenuEntry test1;
 
         string tutlevelText = "Welcome to the System.";
         string level1Text = "Alpha";
         string level2Text = "Beta";
         string level3Text = "Gamma";
+        string level4Text = "Delta";
         string test1Text = "Pick up objets test.";
         
         
@@ -51,6 +53,7 @@ namespace Squareosity
             level1 = new MenuEntry(level1Text);
             level2 = new MenuEntry(level2Text);
             level3 = new MenuEntry(level3Text);
+            level4 = new MenuEntry(level4Text);
             test1 = new MenuEntry(test1Text);
             SetMenuEntryText();
 
@@ -63,6 +66,7 @@ namespace Squareosity
             level1.Selected += level1_Selected;
             level2.Selected += level2_Selected;
             level3.Selected += level3_Selected;
+            level4.Selected += level4_Selected;
             test1.Selected += test1_Selected;
             
 
@@ -72,6 +76,7 @@ namespace Squareosity
             MenuEntries.Add(level1);
             MenuEntries.Add(level2);
             MenuEntries.Add(level3);
+            MenuEntries.Add(level4);
             MenuEntries.Add(test1);
             MenuEntries.Add(back);
         }
@@ -112,12 +117,18 @@ namespace Squareosity
             LoadingScreen.Load(ScreenManager,true,e.PlayerIndex,
                                 new level3Screen());
         }
+        void level4_Selected(object sender, PlayerIndexEventArgs e)
+        {
+            LoadingScreen.Load(ScreenManager, true, e.PlayerIndex,
+                             new LevelDelta());
+        }
+
         void test1_Selected(object sender, PlayerIndexEventArgs e)
         {
             LoadingScreen.Load(ScreenManager, true, e.PlayerIndex,
                                 new TestingPickupable());
         }
-
+       
 
         #endregion
     }

@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GamePlay\Area.cs" />
+    <Compile Include="GamePlay\Arena.cs" />
     <Compile Include="GamePlay\ChainLink.cs" />
     <Compile Include="GamePlay\GameData.cs" />
     <Compile Include="GamePlay\HealthGem.cs" />
@@ -152,6 +153,7 @@
     <Compile Include="Screens\DeadScreen\DeadScreen.cs" />
     <Compile Include="Screens\LevelAlpha\GameplayScreen.cs" />
     <Compile Include="Screens\LevelBeta\level2Screen.cs" />
+    <Compile Include="Screens\LevelDelta\LevelDelta.cs" />
     <Compile Include="Screens\LevelGamma\level3Screen.cs" />
     <Compile Include="Screens\LevelEditor\LevelEditor.cs" />
     <Compile Include="Screens\LoadingScreen.cs" />
