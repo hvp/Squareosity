@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -35,7 +36,8 @@ namespace Squareosity
         public static int bloomSettingsIndex = 0;
         public static World world;
         float pauseAlpha;
-
+        float bloomVal = 3f;
+        int bloomValInt = 1;
         List<Arena> LevelArena = new List<Arena>();
         List<Wall> Walls = new List<Wall>();
         List<Bady> Badies = new List<Bady>();
@@ -92,13 +94,52 @@ namespace Squareosity
 
                 cam2D = new Cam2d(ScreenManager.GraphicsDevice);
                 reticle = content.Load<Texture2D>("redReticle");
+
+                
                 /// player 
                 playerBody = new PlayerBody(content.Load<Texture2D>("redPlayer"), world, content);
 
-                playerBody.setPostion = new Vector2(0);
-               LevelArena.Add(new Arena(content.Load<Texture2D>("Levels/Delta-Level-Bounds-Top"), new Vector2(-0.045f, -2.5f), world));
-               LevelArena.Add( new Arena(content.Load<Texture2D>("Levels/Delta-Level-Bounds-Bottom"), new Vector2(0f, 0f), world));
-             
+                playerBody.setPostion = new Vector2(-940, -450);
+
+                // for some reason we have to offet on the X by -120 px. This just get the level bounds to aling with world objects.
+                // I think it's to do with the scale factor when it's turned into a poly. Maybe? :(
+                LevelArena.Add(new Arena(content.Load<Texture2D>("Levels/Delta"), new Vector2(-120f / 64f, 0f), world));
+
+                // LEVEL CREATION MUHAHAHAAHAHAH 
+                {
+
+                    string line = string.Empty;
+                    string [] vals;
+                    using (StreamReader sr = new StreamReader("Content/Levels/deltaLevel.txt"))
+                    {
+                        while ((line = sr.ReadLine()) != null)
+                        {
+
+                            vals = line.Split(',');
+                         
+                            if (vals[0].Equals("greenMine"))
+                            {
+                                Squares.Add(new Square(content.Load<Texture2D>("Squares/greenSquare"),
+                                    new Vector2((float)Convert.ToInt32(vals[1]), (float)Convert.ToInt32(vals[2])), world));
+
+                            }
+                            else if(vals[0].Equals("FixedDrone")
+                           
+
+                            
+                          
+                        }
+
+                       
+                    }
+
+                }
+
+
+
+
+
+
                 // set cam track 
 
                 cam2D.TrackingBody = playerBody.playerBody;
@@ -165,8 +206,15 @@ namespace Squareosity
                 mouse = Mouse.GetState();
                 // bloom
                 bloom.Visible = true;
-                bloom.Settings = BloomSettings.PresetSettings[bloomSettingsIndex];
+                bloom.Settings = new BloomSettings("TEST", 0.25f, 4, bloomVal, 1, 1, 1);
 
+            /*
+                if (playerBody.getSetWantsToPickUp)
+                {
+                   
+                    bloomVal += 0.1f;
+                }
+                */
                 // update entites
                 playerBody.update(gameTime);
 

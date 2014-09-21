@@ -292,6 +292,9 @@ namespace Squareosity
                 if (mouse.LeftButton == ButtonState.Pressed && laserActive)
                 {
 
+             
+                    
+
                     timer += gameTime.ElapsedGameTime.Milliseconds;
                     if (timer >= fireRate)
                     {
