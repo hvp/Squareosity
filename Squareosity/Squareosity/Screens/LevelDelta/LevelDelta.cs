@@ -123,7 +123,10 @@ namespace Squareosity
                                     new Vector2((float)Convert.ToInt32(vals[1]), (float)Convert.ToInt32(vals[2])), world));
 
                             }
-                            else if(vals[0].Equals("FixedDrone")
+                            else if(vals[0].Equals("FixedDrone"))
+                            {
+
+                            }
                            
 
                             
