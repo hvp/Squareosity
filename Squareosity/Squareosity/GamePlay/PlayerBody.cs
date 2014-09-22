@@ -39,7 +39,7 @@ namespace Squareosity
          bool scoreActive = true;
 
          double fireRate = 300;
-         double timer = 0;
+         double timer = 300; // start at 300???
          KeyboardState oldKeyState;
          int health = 100;
          int score;
@@ -295,8 +295,8 @@ namespace Squareosity
              
                     
 
-                    timer += gameTime.ElapsedGameTime.Milliseconds;
-                    if (timer >= fireRate)
+                  
+                    if (timer > fireRate)
                     {
                         Vector2 mousePos = new Vector2(mouse.X, mouse.Y);
 
@@ -313,6 +313,8 @@ namespace Squareosity
                         playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), direction, playerBody.Position, angle, 2, world));
                         timer = 0;
                     }
+
+                    timer += gameTime.ElapsedGameTime.Milliseconds;
 
                
                 }
