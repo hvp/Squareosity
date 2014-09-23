@@ -3,6 +3,8 @@ Squareosity
 
 2D retro neon super awesome physics puzzler with elements of galaxy adventure. 
 
+The code is very hacky / messy. You have been warned. 
+
 
 Controls
 ========
