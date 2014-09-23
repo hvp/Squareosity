@@ -22,7 +22,8 @@ namespace Squareosity
     enum PowerUp
     {
         None,
-        PowerLaserBlast
+        PowerLaserBlast,
+        ElectricBlast
 
     };
     class PlayerBody
@@ -52,7 +53,27 @@ namespace Squareosity
          bool hasPickedUp = false;
          bool wantsToDrop = false;
 
+         bool firePowerUp = false;
+         bool drawPowerUpAnimation = false;
+         float timerPowerUp = 0;
+         float frameTimePowerUp = 200; // each frame lasts 200 ms  
+         float totalPowerUpTime = 2000; // so the animation will play for 2 secs 
+         int powerUpIndex = 0;
+         Texture2D powerUpTex;
+        
+         Vector2 playerPosPowerUp;
+         int frameSizeX = 205; 
+
+
+         Vector2 veloPowerUp = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right;
+         float rotPowerUp;
+
+
          bool enterWithKeyboard = false;
+
+        
+
+         List<Texture2D> electricAnimation = new List<Texture2D>();
 
          int choice = 99;
          List<playerLaser> playerLasers = new List<playerLaser>();
@@ -73,10 +94,11 @@ namespace Squareosity
             playerBody.BodyId = 1;
             playerBody.CollisionCategories = Category.Cat1;
             playerBody.CollidesWith = Category.All ^ Category.Cat5;
-            playerBody.OnCollision +=new OnCollisionEventHandler(playerBody_OnCollision);
+            playerBody.OnCollision += new OnCollisionEventHandler(playerBody_OnCollision);
             score = 0;
             this.currentPower = PowerUp.None;
-            
+
+            powerUpTex = content.Load<Texture2D>("Animation/Electric/electirc");
 
 
         }
@@ -126,13 +148,53 @@ namespace Squareosity
                 Vector2 textPosition = playerBody.Position * 64 - new Vector2(100, 100);
                 batch.DrawString(font, score.ToString(), textPosition, Color.White,0f,new Vector2(0,0),1f,SpriteEffects.None,1f);
             }
-           batch.Draw(tex, playerBody.Position * 64, null, Color.White, playerBody.Rotation, orgin, 1f, SpriteEffects.None, 1f);
+           batch.Draw(tex, playerBody.Position * 64, null,Color.White, playerBody.Rotation, orgin, 1f, SpriteEffects.None, 1f);
            foreach (playerLaser laser in playerLasers)
            {
                laser.Draw(batch);
 
            }
 
+           if (firePowerUp)
+           {
+               drawPowerUpAnimation = true;
+               firePowerUp = false;
+               veloPowerUp = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right;
+               veloPowerUp = new Vector2(veloPowerUp.X, veloPowerUp.Y);
+               rotPowerUp = VectorToAngle(GamePad.GetState(PlayerIndex.One).ThumbSticks.Right);
+             
+           }
+
+
+
+           if (drawPowerUpAnimation && frameSizeX <= 2048)
+           {
+
+               batch.Draw(powerUpTex, playerBody.Position * 64f, new Rectangle(frameSizeX, 0, 205, 180), Color.White, rotPowerUp - (1.570f), new Vector2(0, 90f), 1f, SpriteEffects.None, 1f);
+               timerPowerUp += 100;
+
+               if (timerPowerUp > frameTimePowerUp)
+               {
+
+                   frameSizeX += 205;
+                   timerPowerUp = 0;
+
+
+
+
+               }
+
+
+           }
+           else
+           {
+
+             drawPowerUpAnimation = false;
+             frameSizeX = 0;
+             timerPowerUp = 0;
+           }
+            
+            
 
       
         }
@@ -152,21 +214,26 @@ namespace Squareosity
                 if (GamePad.GetState(PlayerIndex.One).ThumbSticks.Right != Vector2.Zero && laserActive)
                 {
 
-                    timer += gameTime.ElapsedGameTime.Milliseconds;
-                    if (timer > fireRate && laserActive)
-                    {
+                 
+                    
                         Vector2 velo = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right;
                         velo = new Vector2(velo.X, -velo.Y);
                         float rot = VectorToAngle(GamePad.GetState(PlayerIndex.One).ThumbSticks.Right);
                         playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), velo, playerBody.Position, rot, 2, world));
 
-                    }
+                        if (GamePad.GetState(PlayerIndex.One).Triggers.Right > 0.5f && drawPowerUpAnimation == false) // Ie it's not already playing
+                        {
+                            firePowerUp = true;
+                         
+                            
+                        }
+                    
+                       
+                            
+                    
 
                 }
-                else // check this.
-                {
-                    timer = 0;
-                }
+              
 
                 // may need to intrduce a oldState button state for the game pad.
                 if (choicePoint)
@@ -296,8 +363,7 @@ namespace Squareosity
                     
 
                   
-                    if (timer > fireRate)
-                    {
+                  
                         Vector2 mousePos = new Vector2(mouse.X, mouse.Y);
 
 
@@ -312,10 +378,9 @@ namespace Squareosity
 
                         playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), direction, playerBody.Position, angle, 2, world));
                         timer = 0;
-                    }
+                    
 
-                    timer += gameTime.ElapsedGameTime.Milliseconds;
-
+                 
                
                 }
                 else if (mouse.LeftButton == ButtonState.Released)

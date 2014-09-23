@@ -507,6 +507,65 @@
       <Name>deltaLevel</Name>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Animation\Electric\bolt_strike_0001.png">
+      <Name>bolt_strike_0001</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Animation\Electric\bolt_strike_0002.png">
+      <Name>bolt_strike_0002</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Animation\Electric\bolt_strike_0003.png">
+      <Name>bolt_strike_0003</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Animation\Electric\bolt_strike_0004.png">
+      <Name>bolt_strike_0004</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Animation\Electric\bolt_strike_0005.png">
+      <Name>bolt_strike_0005</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Animation\Electric\bolt_strike_0006.png">
+      <Name>bolt_strike_0006</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Animation\Electric\bolt_strike_0007.png">
+      <Name>bolt_strike_0007</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Animation\Electric\bolt_strike_0008.png">
+      <Name>bolt_strike_0008</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Animation\Electric\bolt_strike_0009.png">
+      <Name>bolt_strike_0009</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Animation\Electric\bolt_strike_0010.png">
+      <Name>bolt_strike_0010</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Animation\Electric\electirc.png">
+      <Name>electirc</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--  To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
