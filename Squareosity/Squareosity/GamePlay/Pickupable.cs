@@ -39,6 +39,7 @@ namespace Squareosity
            this.world = world;
            pickupableBody = BodyFactory.CreateRectangle(this.world,tex.Width / 64f,tex.Height/ 64f,1f,this.pos / 64f);
            pickupableBody.BodyType = BodyType.Dynamic;
+           pickupableBody.Mass = 0.5f; // 4 is good 
            pickupableBody.BodyId = 19;
            pickupableBody.CollisionCategories = Category.Cat7;
            pickupableBody.CollidesWith = Category.All;/*^ Category.Cat2; Would remove player laser collision*/
@@ -60,7 +61,7 @@ namespace Squareosity
         }
         public void Draw(SpriteBatch batch)
        {
-           batch.Draw(tex, pickupableBody.Position * 64, null, Color.White, pickupableBody.Rotation, new Vector2(tex.Width / 2, tex.Height / 2), 1f, SpriteEffects.None, 0f);
+           batch.Draw(tex, pickupableBody.Position * 64, null, Color.White, pickupableBody.Rotation, new Vector2(tex.Width / 2, tex.Height / 2), 1f, SpriteEffects.None, 0.5f);
        }
         public void getDistanceFromPlayer()
         {

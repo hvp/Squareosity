@@ -50,6 +50,8 @@ namespace Squareosity
         Texture2D reticle;
         InputAction pauseAction;
 
+        public static ParticleManager<ParticleState> ParticleManager { get; private set; }
+
         #endregion
 
         #region Initialization
@@ -90,6 +92,8 @@ namespace Squareosity
 
                 bloom = new BloomComponent(ScreenManager.Game);
                 ScreenManager.Game.Components.Add(bloom);
+
+                ParticleManager = new ParticleManager<ParticleState>(1024 * 20, ParticleState.UpdateParticle);
 
 
                 cam2D = new Cam2d(ScreenManager.GraphicsDevice);
@@ -210,7 +214,7 @@ namespace Squareosity
                 // bloom
                 bloom.Visible = true;
                 bloom.Settings = new BloomSettings("TEST", 0.25f, 4, bloomVal, 1, 1, 1);
-
+                ParticleManager.Update();
             /*
                 if (playerBody.getSetWantsToPickUp)
                 {
@@ -313,6 +317,8 @@ namespace Squareosity
                             null,
                             null,
                             cam2D.View);
+
+            ParticleManager.Draw(spriteBatch);
 
             foreach (Arena a in LevelArena)
             {

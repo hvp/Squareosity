@@ -122,9 +122,15 @@
   <ItemGroup>
     <Compile Include="GamePlay\Area.cs" />
     <Compile Include="GamePlay\Arena.cs" />
+    <Compile Include="GamePlay\Art.cs" />
     <Compile Include="GamePlay\ChainLink.cs" />
+    <Compile Include="GamePlay\Extentions.cs" />
+    <Compile Include="GamePlay\FX\ColorUtil.cs" />
+    <Compile Include="GamePlay\FX\ParticleState.cs" />
     <Compile Include="GamePlay\GameData.cs" />
+    <Compile Include="GamePlay\Grid.cs" />
     <Compile Include="GamePlay\HealthGem.cs" />
+    <Compile Include="GamePlay\FX\ParticleManager.cs" />
     <Compile Include="GamePlay\Pickupable.cs" />
     <Compile Include="GamePlay\playerLaser.cs" />
     <Compile Include="GamePlay\FX\BloomComponent.cs" />

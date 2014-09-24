@@ -16,7 +16,7 @@ using FarseerPhysics.Factories;
 using FarseerPhysics.Collision;
 using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Common;
-
+using FarseerPhysics.SamplesFramework;
 namespace Squareosity
 {
     enum PowerUp
@@ -55,11 +55,18 @@ namespace Squareosity
 
          bool firePowerUp = false;
          bool drawPowerUpAnimation = false;
+         bool hasFiredOne = false;
          float timerPowerUp = 0;
          float frameTimePowerUp = 200; // each frame lasts 200 ms  
          float totalPowerUpTime = 2000; // so the animation will play for 2 secs 
          int powerUpIndex = 0;
+         Body powerUpSensor;
+         List<Body> appliedHitByPowerUp = new List<Body>();
+
+
+         Texture2D playerLaser;
          Texture2D powerUpTex;
+         Texture2D powerUpDebug;
         
          Vector2 playerPosPowerUp;
          int frameSizeX = 205; 
@@ -81,6 +88,7 @@ namespace Squareosity
          World world;
 
         public Body playerBody;
+    
 
         public PlayerBody(Texture2D tex, World world, ContentManager content)
         {
@@ -99,6 +107,12 @@ namespace Squareosity
             this.currentPower = PowerUp.None;
 
             powerUpTex = content.Load<Texture2D>("Animation/Electric/electirc");
+            powerUpDebug = content.Load<Texture2D>("powerUpDebug");
+            playerLaser = content.Load<Texture2D>("orangeLaser");
+         
+
+
+
 
 
         }
@@ -167,32 +181,40 @@ namespace Squareosity
 
 
 
-           if (drawPowerUpAnimation && frameSizeX <= 2048)
+           if (drawPowerUpAnimation) 
            {
-
-               batch.Draw(powerUpTex, playerBody.Position * 64f, new Rectangle(frameSizeX, 0, 205, 180), Color.White, rotPowerUp - (1.570f), new Vector2(0, 90f), 1f, SpriteEffects.None, 1f);
-               timerPowerUp += 100;
-
-               if (timerPowerUp > frameTimePowerUp)
+               if (frameSizeX < 2048)
                {
+                   // for some reason it's off by 90 degrees
+                   batch.Draw(powerUpTex, playerBody.Position * 64f, new Rectangle(frameSizeX, 0, 205, 180), Color.White, rotPowerUp - (1.570f), new Vector2(0, 90f), 1f, SpriteEffects.None, 1f);
+                  // batch.Draw(powerUpDebug, powerUpSensor.Position * 64f, null, Color.White, powerUpSensor.Rotation, new Vector2(powerUpDebug.Width / 2, powerUpDebug.Height / 2), 1f, SpriteEffects.None, 1f);
 
-                   frameSizeX += 205;
-                   timerPowerUp = 0;
+                   timerPowerUp += 100;
+
+                   if (timerPowerUp > frameTimePowerUp)
+                   {
+
+                       frameSizeX += 205;
+                       timerPowerUp = 0;
 
 
+
+
+                   }
 
 
                }
+               else
+               {
+                   drawPowerUpAnimation = false;
+                   frameSizeX = 0;
+                   timerPowerUp = 0;
+                   world.RemoveBody(powerUpSensor);
 
+               }
 
            }
-           else
-           {
-
-             drawPowerUpAnimation = false;
-             frameSizeX = 0;
-             timerPowerUp = 0;
-           }
+         
             
             
 
@@ -219,12 +241,21 @@ namespace Squareosity
                         Vector2 velo = GamePad.GetState(PlayerIndex.One).ThumbSticks.Right;
                         velo = new Vector2(velo.X, -velo.Y);
                         float rot = VectorToAngle(GamePad.GetState(PlayerIndex.One).ThumbSticks.Right);
-                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), velo, playerBody.Position, rot, 2, world));
+                        playerLasers.Add(new playerLaser(playerLaser, velo, playerBody.Position, rot, 2, world));
 
                         if (GamePad.GetState(PlayerIndex.One).Triggers.Right > 0.5f && drawPowerUpAnimation == false) // Ie it's not already playing
                         {
-                            firePowerUp = true;
-                         
+                            if (powerUpSensor != null)
+                            {
+                                Console.WriteLine("null sensor");
+                            }
+                              //  world.RemoveBody(powerUpSensor);
+                            
+                                firePowerUp = true;
+                                appliedHitByPowerUp.Clear();
+                                PowerUpSensorIni(playerBody.Position, rot);
+                           
+                          
                             
                         }
                     
@@ -376,7 +407,7 @@ namespace Squareosity
 
 
 
-                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), direction, playerBody.Position, angle, 2, world));
+                        playerLasers.Add(new playerLaser(playerLaser, direction, playerBody.Position, angle, 2, world));
                         timer = 0;
                     
 
@@ -515,6 +546,8 @@ namespace Squareosity
         
         }
 
+      
+
         public bool playerBody_OnCollision(Fixture fix1, Fixture fix2, Contact contact)
         {
 
@@ -539,7 +572,69 @@ namespace Squareosity
             return true;
 
         }
-    
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pos">Sim units</param>
+        /// <param name="rot">Rads</param>
+        private void PowerUpSensorIni(Vector2 pos, float rot)
+        {
+            // should have a size setting 
+            // powerUpSensor = BodyFactory.CreateRectangle(world, 205, 180, 1f);
+        
+          
+       
+            
+         //  powerUpSensor = BodyFactory.CreateRectangle(world, ConvertUnits.ToSimUnits(205), ConvertUnits.ToSimUnits(180), 1f, pos);
+
+            
+            powerUpSensor = BodyFactory.CreateBody(world);
+            FixtureFactory.AttachRectangle(185 / 64f,160 / 64f,1f,new Vector2(0),powerUpSensor,pos);
+            
+            powerUpSensor.Position = pos;
+
+            powerUpSensor.CollidesWith = Category.All ^ Category.Cat1 ^ Category.Cat5 ^ Category.Cat8;
+            powerUpSensor.BodyId = 49;
+            powerUpSensor.Rotation = rot - 1.57f;
+            powerUpSensor.FixedRotation = true;
+            powerUpSensor.BodyType = BodyType.Static;
+            powerUpSensor.IsSensor = true;  
+            powerUpSensor.OnCollision += new OnCollisionEventHandler(powerUpSensor_OnCollision);
+            
+            
+          
+
+        }
+
+        public bool powerUpSensor_OnCollision(Fixture fix1, Fixture fix2, Contact contact)
+        {
+            if (drawPowerUpAnimation && !appliedHitByPowerUp.Contains(fix2.Body))
+            {
+
+                float rot = powerUpSensor.Rotation;
+
+               
+
+                Vector2 angleVector = new Vector2((float)Math.Cos(rot) - (float)Math.Sin(rot));
+
+                angleVector.Normalize();
+
+                fix2.Body.ApplyLinearImpulse(angleVector);
+
+              
+                appliedHitByPowerUp.Add(fix2.Body);
+
+            }
+
+
+
+            return true;
+        }
+      
+
+
+      
     }
 
 

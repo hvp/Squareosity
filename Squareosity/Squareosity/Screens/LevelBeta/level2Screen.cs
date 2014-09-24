@@ -42,7 +42,10 @@ namespace Squareosity
         List<SeekerDrone> Drones = new List<SeekerDrone>();
         List<Collectable> Collectables = new List<Collectable>();
 
+        Random randP = new Random();
 
+        ParticleManager<ParticleState> ParticleManager;
+        Texture2D particleArt;
 
         Texture2D reticle;
         InputAction pauseAction;
@@ -87,14 +90,14 @@ namespace Squareosity
 
                 bloom = new BloomComponent(ScreenManager.Game);
                 ScreenManager.Game.Components.Add(bloom);
-
-
+                ParticleManager = new ParticleManager<ParticleState>(1024 * 20, ParticleState.UpdateParticle);
+                particleArt = content.Load<Texture2D>("Laser");
                 cam2D = new Cam2d(ScreenManager.GraphicsDevice);
                 reticle = content.Load<Texture2D>("redReticle");
                 /// player 
                 playerBody = new PlayerBody(content.Load<Texture2D>("redPlayer"), world, content);
 
-                // drones - can only have two without performance issues 
+                
                 {
 
                     Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(100, 500), world, content, 10));
@@ -206,7 +209,9 @@ namespace Squareosity
                 // bloom
                 bloom.Visible = true;
                 bloom.Settings = BloomSettings.PresetSettings[bloomSettingsIndex];
-                
+
+                // particles
+                ParticleManager.Update();
                 // update entites
                 playerBody.update(gameTime);
 
@@ -239,6 +244,27 @@ namespace Squareosity
 
                     if (drone.getIsDead)
                     {
+                      //  if(!cam2D.getShake)
+                            cam2D.Shake(300f, 1000f);
+
+                        float hue1 = randP.NextFloat(0, 6);
+                        float hue2 = (hue1 + randP.NextFloat(0, 2)) % 6f;
+                        Color color1 = ColorUtil.HSVToColor(hue1, 0.5f, 1);
+                        Color color2 = ColorUtil.HSVToColor(hue2, 0.5f, 1);
+
+                        for (int i = 0; i < 120; i++)
+                        {
+                            float speed = 18f * (1f - 1 / randP.NextFloat(1f, 10f));
+                            var state = new ParticleState()
+                            {
+                                Velocity = randP.NextVector2(speed, speed),
+                                Type = ParticleType.Enemy,
+                                LengthMultiplier = 1f
+                            };
+                            Color color = Color.Lerp(color1, color2, randP.NextFloat(0, 1));
+                            ParticleManager.CreateParticle(particleArt, drone.getBody.Position * 64f, color, 190, new Vector2( 1.5f), state);
+                        }
+                        
                         world.RemoveBody(drone.getBody);
                         
                         playerBody.updateScore(2); /// update this to a getter and setter!!!
@@ -363,6 +389,8 @@ namespace Squareosity
                             null,
                             null,
                             cam2D.View);
+
+            ParticleManager.Draw(spriteBatch);
             foreach (SeekerDrone drone in Drones)
             {
                 drone.draw(spriteBatch);

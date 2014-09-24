@@ -39,6 +39,10 @@ namespace Squareosity
         private Body _trackingBody;
         private Vector2 _translateCenter;
         private Matrix _view;
+        private bool _shake;
+        private float _shakeTime;
+        private float _shakeElpased;
+        private float _shakeAmount;
 
         /// <summary>
         /// The constructor for the Camera2D class.
@@ -55,6 +59,10 @@ namespace Squareosity
 
             _translateCenter = new Vector2(ConvertUnits.ToSimUnits(_graphics.Viewport.Width / 2f),
                                            ConvertUnits.ToSimUnits(_graphics.Viewport.Height / 2f));
+            _shake = false;
+            _shakeTime = 500f;
+            _shakeElpased = 0f;
+            _shakeAmount = 10;
 
             ResetCamera();
         }
@@ -72,6 +80,11 @@ namespace Squareosity
         public Matrix SimProjection
         {
             get { return _projection; }
+        }
+        public bool getShake
+        {
+
+            get { return _shake; }
         }
 
         /// <summary>
@@ -274,6 +287,17 @@ namespace Squareosity
             SetView();
         }
 
+        public void Shake(float time, float amount)
+        {
+
+
+            _shake = true;
+            _shakeTime = time;
+            _shakeAmount = amount;
+
+        }
+
+
         private void SetView()
         {
             Matrix matRotation = Matrix.CreateRotationZ(_currentRotation);
@@ -353,8 +377,42 @@ namespace Squareosity
                 rotDelta /= Math.Abs(rotDelta);
             }
 
-            _currentPosition += 100f * delta * inertia * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            _currentRotation += 80f * rotDelta * rotInertia * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (_shake && _shakeElpased < _shakeTime)
+            {
+              
+
+                _shakeAmount = ConvertUnits.ToSimUnits(_shakeAmount);
+                _shakeElpased += 20;
+
+                Random rand = new Random();
+                float randNumX = rand.NextFloat(-1, 1);
+                float randNumY = rand.NextFloat(-1, 1);
+
+            
+               Vector2 shake = new Vector2(randNumX, randNumY);
+
+
+               _currentPosition += 100f * delta * inertia * shake * (float)gameTime.ElapsedGameTime.TotalSeconds;
+          
+
+                if (_shakeElpased >= _shakeTime)
+                {
+                    _shake = false;
+                    _shakeElpased = 0;
+                }
+
+            }
+            else
+            {
+
+                _currentPosition += 100f * delta * inertia * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _currentRotation += 80f * rotDelta * rotInertia * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+
+
+            }
+            
+            
 
             SetView();
         }

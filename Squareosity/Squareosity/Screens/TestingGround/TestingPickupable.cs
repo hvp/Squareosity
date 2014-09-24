@@ -46,7 +46,15 @@ namespace Squareosity
         Texture2D reticle;
         InputAction pauseAction;
 
+     
+
+        ParticleManager<ParticleState> ParticleManager;
+        Texture2D particleArt;
+
         Area area;
+
+        public static Grid Grid { get; private set; }
+
 
         #endregion
 
@@ -84,8 +92,22 @@ namespace Squareosity
                 if (content == null)
                     content = new ContentManager(ScreenManager.Game.Services, "Content");
 
+                Art.Load(content);
                 gameFont = content.Load<SpriteFont>("gamefont");
 
+
+                ParticleManager = new ParticleManager<ParticleState>(1024 * 20, ParticleState.UpdateParticle);
+                particleArt = content.Load<Texture2D>("Laser");
+             
+
+                const int maxGridPoints = 1600;
+                Vector2 gridSpacing = new Vector2((float)Math.Sqrt(1024 * 768 / maxGridPoints));
+
+                Rectangle posAndSize = new Rectangle(-75, -20, 1140, 640 ); 
+              //  Grid = new Grid(this.ScreenManager.GraphicsDevice.Viewport.Bounds, gridSpacing);
+                Grid = new Grid(posAndSize, gridSpacing);
+                
+                
                 bloom = new BloomComponent(ScreenManager.Game);
                 ScreenManager.Game.Components.Add(bloom);
                 area = new Area(content.Load<Texture2D>("pinkArea"),new Vector2(500,500),0f,world);
@@ -99,6 +121,11 @@ namespace Squareosity
                 Pickupables.Add(new Pickupable(content.Load<Texture2D>("Squares/pinkSquare"), new Vector2(100, 80), world));
                 Pickupables.Add(new Pickupable(content.Load<Texture2D>("Squares/pinkSquare"), new Vector2(120, 100), world));
 
+                Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(500, 300), world, content, 20));
+                Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(600, 350), world, content, 25));
+
+                Drones[0].Stationary = true;
+               
                 int space = 0;
 
                 for (int i = 0; i < 11; i++)
@@ -189,22 +216,69 @@ namespace Squareosity
                 
                 // update entites
                 playerBody.update(gameTime);
-                
+                Grid.Update();
+                ParticleManager.Update();
 
-              
+                
+               Grid.ApplyExplosiveForce(5f, playerBody.playerBody.Position * 64, 80);
+               foreach (playerLaser laser in playerBody.getLasers)
+               {
+               //   Grid.ApplyExplosiveForce(5f, laser.laserBody.Position * 64, 50);
+                  // Grid.ApplyImplosiveForce(5f, laser.laserBody.Position * 64, 50);
+                  Grid.ApplyExplosiveForce(5f, laser.laserBody.Position * 64, 50);
+                   
+               }
+
+
                 if (playerBody.isAlive == false)
                 {
-                    bloom.Visible = false;
-                  
-                    world.Clear();
-                   
-                    
-                    this.ExitScreen();
-
-                    LoadingScreen.Load(ScreenManager, false, PlayerIndex.One, new DeadScreen(2));
-
+                    playerBody.isAlive = true;
                 }
-                
+
+                foreach (SeekerDrone drone in Drones)
+                {
+                    drone.setTarget(playerBody.playerBody.Position * 64);
+
+
+                    drone.update(gameTime);
+
+                    if (drone.getIsDead)
+                    {
+                        //  if(!cam2D.getShake)
+                        cam2D.Shake(300f, 1000f);
+                        Grid.ApplyExplosiveForce(20f, drone.getBody.Position * 64, 1000);
+
+                        Random randP = new Random();
+                        float hue1 = randP.NextFloat(0, 6);
+                        float hue2 = (hue1 + randP.NextFloat(0, 2)) % 6f;
+                        Color color1 = ColorUtil.HSVToColor(hue1, 0.5f, 1);
+                        Color color2 = ColorUtil.HSVToColor(hue2, 0.5f, 1);
+
+                        for (int i = 0; i < 120; i++)
+                        {
+                            float speed = 18f * (1f - 1 / randP.NextFloat(1f, 10f));
+                            var state = new ParticleState()
+                            {
+                                Velocity = randP.NextVector2(speed, speed),
+                                Type = ParticleType.Enemy,
+                                LengthMultiplier = 1f
+                            };
+                            Color color = Color.Lerp(color1, color2, randP.NextFloat(0, 1));
+                            ParticleManager.CreateParticle(particleArt, drone.getBody.Position * 64f, color, 190, new Vector2(1.5f), state);
+                        }
+
+                        world.RemoveBody(drone.getBody);
+
+                        playerBody.updateScore(2); /// update this to a getter and setter!!!
+                    }
+                }
+                for (int k = 0; k < Drones.Count; ++k)
+                {
+                    if (Drones[k].getIsDead)
+                    {
+                        Drones.RemoveAt(k);
+                    }
+                }
                 //game script 
 
                 foreach (Pickupable pickupable in Pickupables)
@@ -215,6 +289,25 @@ namespace Squareosity
                       // joints.Add ( JointFactory.CreateRevoluteJoint(world,playerBody.playerBody,
                         //   pickupable.getBody, new Vector2(0,0)));
 
+
+                        Random randP = new Random();
+                        float hue1 = randP.NextFloat(0, 6);
+                        float hue2 = (hue1 + randP.NextFloat(0, 2)) % 6f;
+                        Color color1 = ColorUtil.HSVToColor(hue1, 0.5f, 1);
+                        Color color2 = ColorUtil.HSVToColor(hue2, 0.5f, 1);
+
+                        for (int i = 0; i < 30; i++)
+                        {
+                            float speed = 18f * (1f - 1 / randP.NextFloat(1f, 10f));
+                            var state = new ParticleState()
+                            {
+                                Velocity = randP.NextVector2(speed, speed),
+                                Type = ParticleType.Enemy,
+                                LengthMultiplier = 0.4f
+                            };
+                            Color color = Color.Lerp(color1, color2, randP.NextFloat(0, 1));
+                            ParticleManager.CreateParticle(particleArt, pickupable.getBody.Position * 64f, color, 190, new Vector2(1.5f), state);
+                        }
                        joints.Add( JointFactory.CreateDistanceJoint(world, playerBody.playerBody, pickupable.getBody, new Vector2(0, 0), new Vector2(0, 0)));
 
 
@@ -293,6 +386,16 @@ namespace Squareosity
             else
             {
                 playerBody.detectInput(keyboardState, mouse, cam2D.Position, gameTime);
+                if(keyboardState.IsKeyDown(Keys.Space))
+                {
+                    Random rand = new Random();
+                    float randX = rand.NextFloat(120, 1000);
+                    float randY = rand.NextFloat(100, 500);
+                    float ranD = rand.NextFloat(7, 30);
+
+                    Drones.Add(new SeekerDrone(content.Load<Texture2D>("testArrow"), new Vector2(randX, randY), world, content, ranD));
+
+                }
             }
         }
 
@@ -315,6 +418,9 @@ namespace Squareosity
                             null,
                             null,
                             cam2D.View);
+
+            ParticleManager.Draw(spriteBatch);
+            Grid.Draw(spriteBatch);
             foreach (SeekerDrone drone in Drones)
             {
                 drone.draw(spriteBatch);

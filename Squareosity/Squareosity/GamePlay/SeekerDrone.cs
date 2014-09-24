@@ -41,12 +41,17 @@ namespace Squareosity
         ContentManager content;
         List<Laser> Lasers = new List<Laser>();
         Texture2D laserTex;
+   
         Vector2 target = new Vector2(0,0);
         bool isDead = false;
         bool isStationary = false;
         float fireRate = 250;
         bool laserActive = true;
         float counter = 0;
+
+        Type hostLevel;
+
+        
 
         KeyboardState keyState;
        
@@ -61,6 +66,7 @@ namespace Squareosity
 
             Lasers = new List<Laser>();
             laserTex = content.Load<Texture2D>("YellowCircleLaserSmall");
+            
 
             pos = pos / 64;
             droneBody = BodyFactory.CreateCircle(world, 10.0f / 64, 1f, pos);
@@ -129,10 +135,11 @@ namespace Squareosity
             // }
             //  drone's seeking 
             {
+            
                 direction.Normalize();
-
                 if (!isStationary)
-                {
+                {    
+                    
                     if (target.X < droneBody.Position.X * 64)
                     {
                         droneBody.ApplyLinearImpulse(-direction * 0.2f);
@@ -150,8 +157,15 @@ namespace Squareosity
 
 
             if (health <= 0)
+            {
                 isDead = true;
 
+              
+            }
+
+
+
+            
             for (int k = 0; k < Lasers.Count; k++)
             {
 
@@ -201,6 +215,12 @@ namespace Squareosity
 
             }
 
+            if (fixtureB.Body.BodyId == 49 && !isStationary) // power up
+            {
+                health -= 100;
+
+            }
+
             return true;
         }
         public bool LaserActive
@@ -218,6 +238,11 @@ namespace Squareosity
             get { return isStationary; }
         }
 
+        public Type setLevel
+        {
+            set { hostLevel = value; }
+            
+        }
         public bool getIsDead
         {
             get { return isDead; }
