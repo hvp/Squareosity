@@ -35,4 +35,4 @@ Build requirements
 
 Sample Video
 ============
-https://www.youtube.com/watch?v=45XSOUwqZrE
+https://www.youtube.com/watch?v=uLZOmTfepug
