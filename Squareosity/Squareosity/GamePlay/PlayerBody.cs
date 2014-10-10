@@ -368,33 +368,65 @@ namespace Squareosity
                     if (currentPower == PowerUp.PowerLaserBlast)
                     {
 
-                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), getVectorFromRads(AngleToRads(45)), playerBody.Position, -AngleToRads(45), 50,world));
-                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), -getVectorFromRads(AngleToRads(45)), playerBody.Position, -AngleToRads(45),50, world));
-                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), -getVectorFromRads(AngleToRads(135)), playerBody.Position, -AngleToRads(135),50 ,world));
-                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), getVectorFromRads(AngleToRads(135)), playerBody.Position, -AngleToRads(135), 50,world));
+                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), getVectorFromRads(AngleToRads(45)), playerBody.Position, -AngleToRads(45), 50, world));
+                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), -getVectorFromRads(AngleToRads(45)), playerBody.Position, -AngleToRads(45), 50, world));
+                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), -getVectorFromRads(AngleToRads(135)), playerBody.Position, -AngleToRads(135), 50, world));
+                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), getVectorFromRads(AngleToRads(135)), playerBody.Position, -AngleToRads(135), 50, world));
 
-                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), new Vector2(1,0), playerBody.Position, VectorToAngle(new Vector2(1,0)), 50,world));
-                        
-                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), new Vector2(0, 1), playerBody.Position, VectorToAngle(new Vector2(0, 1)), 50 ,world));
+                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), new Vector2(1, 0), playerBody.Position, VectorToAngle(new Vector2(1, 0)), 50, world));
 
-                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), new Vector2(0, -1), playerBody.Position, VectorToAngle(new Vector2(0, -1)), 50,world));
+                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), new Vector2(0, 1), playerBody.Position, VectorToAngle(new Vector2(0, 1)), 50, world));
 
-                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), new Vector2(-1, 0), playerBody.Position, VectorToAngle(new Vector2(-1, 0)),50,world));
+                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), new Vector2(0, -1), playerBody.Position, VectorToAngle(new Vector2(0, -1)), 50, world));
+
+                        playerLasers.Add(new playerLaser(content.Load<Texture2D>("orangeLaser"), new Vector2(-1, 0), playerBody.Position, VectorToAngle(new Vector2(-1, 0)), 50, world));
 
                         currentPower = PowerUp.None;
-                            
+
+                    }
+                    else
+                    {
+
+                        if ( drawPowerUpAnimation == false) // Ie it's not already playing
+                        {
+                            if (powerUpSensor != null)
+                            {
+                                Console.WriteLine(" not null sensor");
+                                world.RemoveBody(powerUpSensor);
+                            }
+                            //  
+
+
+
+                            Vector2 mousePos = new Vector2(mouse.X, mouse.Y);
+
+
+                            Vector2 target = mousePos + camPos - new Vector2(1024f / 2f, 768f / 2f);
+
+
+                            Vector2 direction = target - playerBody.Position * 64; // velocity 
+                            float angle = Angle(playerBody.Position * 64, target);
+
+
+                            firePowerUp = true;
+                            appliedHitByPowerUp.Clear();
+                            PowerUpSensorIni(playerBody.Position, angle);
+
+
+
+                        }
+
+
+
+
                     }
 
                 }
 
-                if (mouse.LeftButton == ButtonState.Pressed && laserActive)
+                if (mouse.LeftButton == ButtonState.Pressed && laserActive )
                 {
 
              
-                    
-
-                  
-                  
                         Vector2 mousePos = new Vector2(mouse.X, mouse.Y);
 
 
@@ -404,19 +436,13 @@ namespace Squareosity
                         Vector2 direction = target - playerBody.Position * 64; // velocity 
                         float angle = Angle(playerBody.Position * 64, target);
 
-
-
-
                         playerLasers.Add(new playerLaser(playerLaser, direction, playerBody.Position, angle, 2, world));
-                        timer = 0;
+                     
                     
-
-                 
-               
                 }
                 else if (mouse.LeftButton == ButtonState.Released)
                 {
-                    timer = 0;
+                    
                 }
 
                 oldKeyState = keyboardState;
